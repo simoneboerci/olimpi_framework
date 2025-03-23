@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using cAlgo.API;
 using Logging.Core.Enums;
+using Logging.Core.Factories;
 using Logging.Core.Interfaces;
 using Logging.Core.Models;
 using Logging.Data.Formatters;
@@ -19,9 +20,12 @@ namespace cAlgo.Robots
 
         protected override void OnStart()
         {
+            ISystemConsoleFactory consoleFactory = new SystemConsoleFactory();
+            ISystemConsole console = consoleFactory.Create();
+
             var providers = new List<ILogProvider>
             {
-                new ConsoleLogProvider(new PlainTextLogFormatter())
+                new ConsoleLogProvider(new PlainTextLogFormatter(), console)
             };
             logger = new Logger(providers);
             logger.Log(new LogEntry(LogLevel.Debug, "Hello world!"));
