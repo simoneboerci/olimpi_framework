@@ -7,7 +7,7 @@ using Logging.Core.Models;
 namespace Logging.Services
 {
     // Classe Logger che implementa l'interfaccia ILogger per gestire il logging
-    public class Logger : ILogger
+    public sealed class Logger : ILogger
     {
         // Collezione dei provider che effettueranno le operazioni di scrittura del log
         private readonly IEnumerable<ILogProvider> _logProviders;
