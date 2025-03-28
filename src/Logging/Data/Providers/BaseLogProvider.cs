@@ -5,29 +5,51 @@ using Logging.Core.Models;
 
 namespace Logging.Data.Providers
 {
-    // Classe astratta che rappresenta un provider di log.
-    // Implementa l'interfaccia ILogProvider e fornisce funzionalità comuni per la formattazione dei log.
+    /// <summary>
+    /// Classe astratta che rappresenta un provider di log.
+    /// Implementa l'interfaccia <see cref="ILogProvider"/> e fornisce funzionalità comuni
+    /// per la formattazione delle entry di log.
+    /// </summary>
     public abstract class BaseLogProvider : ILogProvider
     {
-        // Formatter utilizzato per convertire un LogEntry in una stringa formattata.
+        /// <summary>
+        /// Formatter utilizzato per convertire un <see cref="LogEntry"/> in una stringa formattata.
+        /// </summary>
         protected readonly ILogFormatter Formatter;
 
-        // Costruttore che inizializza il BaseLogProvider con un formatter.
-        // Se il formatter è null, viene sollevata un'eccezione ArgumentNullException.
+        /// <summary>
+        /// Inizializza una nuova istanza di <see cref="BaseLogProvider"/> con il formatter specificato.
+        /// Solleva un'eccezione <see cref="ArgumentNullException"/> se il parametro formatter è null.
+        /// </summary>
+        /// <param name="formatter">Il formatter da utilizzare per formattare le entry di log.</param>
         protected BaseLogProvider(ILogFormatter formatter)
         {
             Formatter = formatter ?? throw new ArgumentNullException(nameof(formatter));
         }
 
-        // Metodo astratto per scrivere una voce di log in modo sincrono.
+        /// <summary>
+        /// Metodo astratto per scrivere una voce di log in maniera sincrona.
+        /// Le classi derivate devono implementare la logica specifica per la scrittura del log.
+        /// </summary>
+        /// <param name="entry">L'entry di log da scrivere.</param>
         public abstract void Write(LogEntry entry);
 
-        // Metodo astratto per scrivere una voce di log in modo asincrono.
-        // Accetta un callback opzionale da invocare al termine dell'operazione.
+        /// <summary>
+        /// Metodo astratto per scrivere una voce di log in maniera asincrona.
+        /// Le classi derivate devono implementare la logica specifica per la scrittura
+        /// del log in modo non bloccante, accettando un callback opzionale che verrà eseguito
+        /// al termine dell'operazione.
+        /// </summary>
+        /// <param name="entry">L'entry di log da scrivere.</param>
+        /// <param name="callback">Callback opzionale da invocare al termine della scrittura.</param>
+        /// <returns>Un task che rappresenta l'operazione asincrona di scrittura del log.</returns>
         public abstract Task WriteAsync(LogEntry entry, Action callback = null);
 
-        // Metodo protetto per formattare una voce di log utilizzando il formatter in uso.
-        // Ritorna una stringa che rappresenta il log formattato.
+        /// <summary>
+        /// Metodo protetto che formatta una voce di log utilizzando il formatter in uso.
+        /// </summary>
+        /// <param name="entry">L'entry di log da formattare.</param>
+        /// <returns>Una stringa che rappresenta il log formattato.</returns>
         protected string FormatLogEntry(LogEntry entry)
         {
             return Formatter.Format(entry);

@@ -5,44 +5,66 @@ using Logging.Core.Models;
 
 namespace Logging.Presentation
 {
-    // Classe ViewModel che rappresenta un log entry in modo adatto alla presentazione
+    /// <summary>
+    /// Classe ViewModel che rappresenta un log entry in modo adatto alla presentazione.
+    /// Fornisce metodi per la conversione da un'entità LogEntry e per la serializzazione/deserializzazione in formato JSON.
+    /// </summary>
     public class LogEntryViewModel
     {
-        // Proprietà che indica il livello del log (ad esempio: Info, Warning, Error)
+        /// <summary>
+        /// Indica il livello del log (ad esempio, Info, Warning, Error).
+        /// </summary>
         public LogLevel Level { get; set; }
         
-        // Proprietà che contiene il messaggio del log
+        /// <summary>
+        /// Contiene il messaggio del log.
+        /// </summary>
         public string Message { get; set; } = "";
         
-        // Proprietà che memorizza la data e l'ora in cui il log è stato generato
+        /// <summary>
+        /// Memorizza la data e l'ora in cui il log è stato generato.
+        /// </summary>
         public DateTime Timestamp { get; set; }
         
-        // Proprietà che contiene il messaggio dell'eccezione, se presente
+        /// <summary>
+        /// Contiene il messaggio dell'eccezione, se presente.
+        /// </summary>
         public string Exception { get; set; }
 
-        // Metodo statico per convertire un'entità LogEntry in un LogEntryViewModel
+        /// <summary>
+        /// Converte un'entità LogEntry in un'istanza di LogEntryViewModel.
+        /// </summary>
+        /// <param name="entry">L'entità LogEntry da convertire.</param>
+        /// <returns>Una nuova istanza di LogEntryViewModel con i dati mappati dall'entità.</returns>
         public static LogEntryViewModel FromEntity(LogEntry entry)
         {
             return new LogEntryViewModel
             {
-                Level = entry.LogLevel,            // Imposta il livello di log a partire dall'entità
-                Message = entry.Message,            // Imposta il messaggio di log
-                Timestamp = entry.Timestamp,        // Imposta il timestamp del log
-                Exception = entry.Exception?.Message // Imposta il messaggio dell'eccezione se presente
+                Level = entry.LogLevel,             // Mappa il livello di log dall'entità.
+                Message = entry.Message,             // Mappa il messaggio del log.
+                Timestamp = entry.Timestamp,         // Mappa il timestamp del log.
+                Exception = entry.Exception?.Message // Mappa il messaggio dell'eccezione, se presente.
             };
         }
 
-        // Metodo statico per creare un LogEntryViewModel da una stringa JSON
+        /// <summary>
+        /// Crea un'istanza di LogEntryViewModel a partire da una stringa JSON.
+        /// </summary>
+        /// <param name="json">La stringa JSON da deserializzare.</param>
+        /// <returns>Un'istanza di LogEntryViewModel ottenuta dalla stringa JSON.</returns>
         public static LogEntryViewModel FromJson(string json)
         {
-            // Deserializza la stringa JSON nel LogEntryViewModel
+            // Deserializza la stringa JSON nel LogEntryViewModel.
             return JsonSerializer.Deserialize<LogEntryViewModel>(json)!;
         }
 
-        // Metodo per serializzare l'oggetto LogEntryViewModel in una stringa JSON
+        /// <summary>
+        /// Serializza l'oggetto LogEntryViewModel in una stringa JSON.
+        /// </summary>
+        /// <returns>La rappresentazione in formato JSON dell'istanza corrente di LogEntryViewModel.</returns>
         public string ToJson()
         {
-            // Serializza questo oggetto in formato JSON
+            // Serializza questo oggetto in formato JSON.
             return JsonSerializer.Serialize(this);
         }
     }

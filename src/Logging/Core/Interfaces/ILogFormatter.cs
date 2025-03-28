@@ -2,11 +2,17 @@ using Logging.Core.Models;
 
 namespace Logging.Core.Interfaces
 {
-    // Interfaccia ILogFormatter che definisce il metodo per formattare una voce di log.
-    // Ogni implementazione di questa interfaccia deve fornire il metodo Format per convertire un LogEntry in una stringa formattata.
+    /// <summary>
+    /// Interfaccia ILogFormatter che definisce il metodo per formattare una voce di log.
+    /// Ogni implementazione di questa interfaccia deve fornire il metodo <see cref="Format"/> per convertire un <see cref="LogEntry"/> in una stringa formattata.
+    /// </summary>
     public interface ILogFormatter
     {
-        // Metodo che riceve una voce di log (LogEntry) e la converte in una stringa formattata.
+        /// <summary>
+        /// Converte una voce di log in una stringa formattata.
+        /// </summary>
+        /// <param name="entry">L'istanza di <see cref="LogEntry"/> contenente i dettagli del log.</param>
+        /// <returns>Una stringa che rappresenta il log formattato.</returns>
         string Format(LogEntry entry);
     }
 }

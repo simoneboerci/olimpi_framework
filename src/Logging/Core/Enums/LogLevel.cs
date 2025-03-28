@@ -1,18 +1,30 @@
 namespace Logging.Core.Enums
 {
-    // Enum che rappresenta i possibili livelli di log.
-    // Viene utilizzato per classificare la gravità dei messaggi di log.
+    /// <summary>
+    /// Enum che rappresenta i possibili livelli di log.
+    /// Viene utilizzato per classificare la gravità dei messaggi di log.
+    /// </summary>
     public enum LogLevel
     {
-        // Livello informativo: per messaggi di routine che tracciano il normale funzionamento dell'applicazione.
+        /// <summary>
+        /// Livello informativo: per messaggi di routine che tracciano il normale funzionamento dell'applicazione.
+        /// </summary>
         Info,
-        // Livello debug: per dettagli utili allo sviluppo e alla risoluzione di problemi.
+        /// <summary>
+        /// Livello debug: per dettagli utili allo sviluppo e alla risoluzione di problemi.
+        /// </summary>
         Debug,
-        // Livello warning: per segnalare situazioni potenzialmente problematiche che non interrompono l'esecuzione.
+        /// <summary>
+        /// Livello warning: per segnalare situazioni potenzialmente problematiche che non interrompono l'esecuzione.
+        /// </summary>
         Warning,
-        // Livello error: per indicare errori che richiedono attenzione.
+        /// <summary>
+        /// Livello error: per indicare errori che richiedono attenzione.
+        /// </summary>
         Error,
-        // Livello critico: per errori gravi che possono compromettere il corretto funzionamento dell'applicazione.
+        /// <summary>
+        /// Livello critico: per errori gravi che possono compromettere il corretto funzionamento dell'applicazione.
+        /// </summary>
         Critical
     }
 }
