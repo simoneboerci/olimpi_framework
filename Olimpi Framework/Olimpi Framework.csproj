@@ -6,4 +6,8 @@
   <ItemGroup>
     <PackageReference Include="cTrader.Automate" Version="*" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../src/Logging/Logging.csproj" />
+  </ItemGroup>
 </Project>
