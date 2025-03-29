@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using Logging.Core.Interfaces;
 using Logging.Core.Models;
 
@@ -38,36 +37,10 @@ namespace Logging.Data.Providers
         /// Scrive sincronicamente una voce di log su file.
         /// </summary>
         /// <param name="entry">L'entry di log da scrivere.</param>
-        public override void Write(LogEntry entry)
+        protected override void DisplayLogEntryImplementation(LogEntry entry, string formattedText)
         {
-            // Recupera il percorso completo del file, eventualmente modificato per la rotazione in base alla data.
-            var path = GetFilePath();
-            // Format del messaggio di log utilizzando il formatter ereditato da BaseLogProvider.
-            var logText = FormatLogEntry(entry);
             // Appende il testo del log al file specificato, aggiungendo una nuova riga alla fine.
-            File.AppendAllText(path, logText + Environment.NewLine);
-        }
-
-        /// <summary>
-        /// Scrive asincronicamente una voce di log su file.
-        /// </summary>
-        /// <param name="entry">L'entry di log da scrivere.</param>
-        /// <param name="callback">Azione opzionale da eseguire dopo il completamento della scrittura.</param>
-        /// <returns>Un task che rappresenta l'operazione asincrona di scrittura.</returns>
-        public override Task WriteAsync(LogEntry entry, Action callback = null)
-        {
-            // Recupera il percorso completo del file, eventualmente modificato per la rotazione in base alla data.
-            var path = GetFilePath();
-            // Format del messaggio di log tramite il formatter.
-            var logText = FormatLogEntry(entry);
-            // Esegue la scrittura in modo asincrono tramite un task separato.
-            return Task.Run(() =>
-            {
-                // Appende il testo del log al file specificato con una nuova riga alla fine.
-                File.AppendAllText(path, logText + Environment.NewLine);
-                // Invochi il callback se specificato, una volta terminata l'operazione.
-                callback?.Invoke();
-            });
+            File.AppendAllText(GetFilePath(), formattedText + Environment.NewLine);
         }
 
         /// <summary>

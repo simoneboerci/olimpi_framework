@@ -1,4 +1,5 @@
 using Logging.Core.Enums;
+using Logging.Core.Errors;
 using Logging.Core.Interfaces;
 using Logging.Core.Models;
 using Logging.Services;
@@ -6,136 +7,147 @@ using Moq;
 
 namespace Logging.Test
 {
-    /// <summary>
-    /// Classe di test per la classe <see cref="Logger"/>.
-    /// Utilizza Moq per simulare i provider di log e verificare il corretto comportamento 
-    /// della registrazione dei log sia in modalità sincrona che asincrona.
-    /// </summary>
     [TestClass]
     public class LoggerTest
     {
-        // Mock per simulare il primo provider di log.
+        private Mock<ILogQueue>? _mockLogQueue;
         private Mock<ILogProvider>? _mockProvider1;
-        // Mock per simulare il secondo provider di log.
         private Mock<ILogProvider>? _mockProvider2;
-        // Istanza della classe Logger da testare.
         private Logger? _logger;
 
-        /// <summary>
-        /// Metodo di setup eseguito prima di ogni test.
-        /// Inizializza i mock dei provider e crea l'istanza di Logger utilizzando la lista di provider.
-        /// </summary>
         [TestInitialize]
         public void Setup()
         {
+            _mockLogQueue = new Mock<ILogQueue>();
             _mockProvider1 = new Mock<ILogProvider>();
             _mockProvider2 = new Mock<ILogProvider>();
+
+            // Impostiamo GetLogs() per restituire per default una lista vuota.
+            _mockLogQueue.Setup(q => q.GetLogs(It.IsAny<int?>())).Returns([]);
+            _mockLogQueue.Setup(q => q.GetLogs(It.IsAny<int?>())).Returns([]);
+
+            // Configuriamo i mock dei provider per il log sincrono.
+            _mockProvider1.Setup(p => p.DisplayLogEntry(It.IsAny<LogEntry>()));
+            _mockProvider2.Setup(p => p.DisplayLogEntry(It.IsAny<LogEntry>()));
+
             var providers = new List<ILogProvider> { _mockProvider1.Object, _mockProvider2.Object };
-            _logger = new Logger(providers);
+
+            // Crea l'istanza di Logger con la log queue mockata e la lista di provider.
+            _logger = new Logger(_mockLogQueue.Object, providers);
         }
 
         /// <summary>
-        /// Verifica che il metodo sincrono <see cref="Logger.Log(LogEntry)"/> invochi il metodo Write()
-        /// su tutti i provider configurati.
+        /// Verifica che il metodo Log invii la log entry alla log queue.
         /// </summary>
         [TestMethod]
-        public void Log_ShouldCallWriteOnAllProviders()
+        public void Log_ShouldEnqueueLogEntry()
         {
-            // Arrange: crea una entry di log di livello Debug.
+            // Arrange
             var logEntry = new LogEntry(LogLevel.Debug, "Test log");
 
-            // Act: esegue il logging con l'entry creata.
+            // Act
             _logger!.Log(logEntry);
 
-            // Assert: verifica che il metodo Write sia stato chiamato una volta su ciascun provider.
-            _mockProvider1!.Verify(p => p.Write(logEntry), Times.Once);
-            _mockProvider2!.Verify(p => p.Write(logEntry), Times.Once);
+            // Assert: verifica che la log entry sia stata accodata.
+            _mockLogQueue!.Verify(q => q.Enqueue(logEntry), Times.Once);
         }
 
         /// <summary>
-        /// Verifica che, in caso di eccezione sollevata da un provider durante il logging sincrono,
-        /// il metodo Log continui ad eseguire la chiamata degli altri provider.
+        /// Verifica che lo swap della log queue venga gestito correttamente:
+        /// dopo lo swap, le entry vengono inviate alla nuova log queue.
         /// </summary>
         [TestMethod]
-        public void Log_ShouldHandleExceptionsFromProviders()
+        public void SwapLogQueue_ShouldUseNewQueueForLogging()
         {
-            // Arrange: crea una entry di log e configura il primo mock per lanciare un'eccezione.
-            var logEntry = new LogEntry(LogLevel.Debug, "Test log");
-            _mockProvider1!.Setup(p => p.Write(It.IsAny<LogEntry>())).Throws(new Exception("Provider error"));
+            // Arrange: crea un nuovo mock per la log queue.
+            var newMockLogQueue = new Mock<ILogQueue>();
+            newMockLogQueue.Setup(q => q.GetLogs(It.IsAny<int?>())).Returns([]);
+            newMockLogQueue.Setup(q => q.GetLogs(It.IsAny<int?>())).Returns([]);
+            _logger!.SwapLogQueue(newMockLogQueue.Object);
 
-            // Act: esegue il logging, l'eccezione dovrà essere gestita internamente.
-            _logger!.Log(logEntry);
+            var logEntry = new LogEntry(LogLevel.Info, "Log after swap");
 
-            // Assert: verifica che, nonostante l'eccezione del primo provider, entrambi i provider abbiano ricevuto la chiamata.
-            _mockProvider1!.Verify(p => p.Write(logEntry), Times.Once);
-            _mockProvider2!.Verify(p => p.Write(logEntry), Times.Once);
+            // Act
+            _logger.Log(logEntry);
+
+            // Assert: verifica che la nuova log queue sia stata utilizzata.
+            newMockLogQueue.Verify(q => q.Enqueue(logEntry), Times.Once);
+            _mockLogQueue!.Verify(q => q.Enqueue(It.IsAny<LogEntry>()), Times.Never);
         }
 
         /// <summary>
-        /// Verifica che il metodo asincrono <see cref="Logger.LogAsync(LogEntry, Action)"/> invochi il metodo WriteAsync()
-        /// su tutti i provider configurati.
+        /// Verifica che l'attach di un provider:
+        /// - Carichi le entry precedenti tramite GetLogs
+        /// - Sottoscriva l'evento LogEntryAdded, in modo che il nuovo provider riceva futuri log.
         /// </summary>
         [TestMethod]
-        public async Task LogAsync_ShouldCallWriteAsyncOnAllProviders()
+        public void AttachLogProvider_ShouldLoadPreviousEntriesAndSubscribeToEvent()
         {
-            // Arrange: crea una entry di log e configura i mock per il metodo asincrono.
-            var logEntry = new LogEntry(LogLevel.Debug, "Test log");
-            _mockProvider1!.Setup(p => p.WriteAsync(It.IsAny<LogEntry>(), It.IsAny<Action>()))
-                .Returns(Task.CompletedTask);
-            _mockProvider2!.Setup(p => p.WriteAsync(It.IsAny<LogEntry>(), It.IsAny<Action>()))
-                .Returns(Task.CompletedTask);
+            // Arrange: simula log già presenti nella log queue.
+            var existingEntries = new List<LogEntry>
+            {
+                new(LogLevel.Info, "Existing log")
+            };
+            _mockLogQueue!.Setup(q => q.GetLogs(It.IsAny<int?>())).Returns(existingEntries);
+            _mockLogQueue.Setup(q => q.GetLogs(It.IsAny<int?>())).Returns(existingEntries);
 
-            // Act: esegue il logging asincrono.
-            await _logger!.LogAsync(logEntry);
+            // Crea un nuovo provider mock (che non sia già presente nella lista iniziale).
+            var newProvider = new Mock<ILogProvider>();
+            newProvider.Setup(p => p.DisplayLogEntry(It.IsAny<LogEntry>()));
 
-            // Assert: verifica che WriteAsync sia stato chiamato esattamente una volta per ciascun provider.
-            _mockProvider1.Verify(p => p.WriteAsync(logEntry, null), Times.Once);
-            _mockProvider2.Verify(p => p.WriteAsync(logEntry, null), Times.Once);
+            // Act: Attacca il nuovo provider.
+            _logger!.AttachLogProvider(newProvider.Object, loadPreviousLogEntries: true);
+
+            // Assert: per ogni log già presente deve essere chiamato DisplayLogEntry.
+            foreach(var entry in existingEntries)
+            {
+                newProvider.Verify(p => p.DisplayLogEntry(entry), Times.Once);
+            }
+
+            // Simula un nuovo log che la log queue notifica tramite l'evento.
+            var newLogEntry = new LogEntry(LogLevel.Warning, "New log event");
+            _mockLogQueue.Raise(q => q.LogEntryAdded += null, newLogEntry);
+
+            // Il nuovo provider deve ricevere anche il nuovo log.
+            newProvider.Verify(p => p.DisplayLogEntry(newLogEntry), Times.Once);
         }
 
         /// <summary>
-        /// Verifica che, in caso di eccezione sollevata da un provider nel logging asincrono, 
-        /// il metodo LogAsync continui ad eseguire la chiamata degli altri provider.
+        /// Verifica che il detach di un provider lo rimuova dalla lista e lo desottoscriva dall'evento.
+        /// Utilizziamo un provider creato ex novo per evitare conflitti con quelli già presenti nel costruttore.
         /// </summary>
         [TestMethod]
-        public async Task LogAsync_ShouldHandleExceptionsFromProviders()
+        public void DetachLogProvider_ShouldUnsubscribeAndRemoveProvider()
         {
-            // Arrange: crea una entry di log e configura il primo mock per lanciare un'eccezione asincrona.
-            var logEntry = new LogEntry(LogLevel.Debug, "Test log");
-            _mockProvider1!.Setup(p => p.WriteAsync(It.IsAny<LogEntry>(), It.IsAny<Action>()))
-                .ThrowsAsync(new Exception("Provider error"));
-            _mockProvider2!.Setup(p => p.WriteAsync(It.IsAny<LogEntry>(), It.IsAny<Action>()))
-                .Returns(Task.CompletedTask);
+            // Arrange: crea un nuovo provider e attaccalo.
+            var providerToDetach = new Mock<ILogProvider>();
+            providerToDetach.Setup(p => p.DisplayLogEntry(It.IsAny<LogEntry>()));
+            _logger!.AttachLogProvider(providerToDetach.Object);
+            
+            // Act: esegui il detach.
+            _logger.DetachLogProvider(providerToDetach.Object);
 
-            // Act: esegue il logging asincrono.
-            await _logger!.LogAsync(logEntry);
+            // Simula un nuovo log che la log queue notifica tramite l'evento.
+            var logEntry = new LogEntry(LogLevel.Error, "Log after detach");
+            _mockLogQueue!.Raise(q => q.LogEntryAdded += null, logEntry);
 
-            // Assert: verifica che entrambi i provider abbiano ricevuto la chiamata nonostante l'eccezione.
-            _mockProvider1.Verify(p => p.WriteAsync(logEntry, null), Times.Once);
-            _mockProvider2.Verify(p => p.WriteAsync(logEntry, null), Times.Once);
+            // Assert: il provider rimosso non deve ricevere la notifica.
+            providerToDetach.Verify(p => p.DisplayLogEntry(logEntry), Times.Never);
         }
 
         /// <summary>
-        /// Verifica che, al termine dell'operazione asincrona, venga invocato il callback passato al metodo LogAsync.
+        /// Verifica che tentare di fare il detach di un provider non presente sollevi l'eccezione corretta.
         /// </summary>
         [TestMethod]
-        public async Task LogAsync_ShouldInvokeCallbackAfterCompletion()
+        public void DetachLogProvider_ShouldThrowException_WhenProviderNotFound()
         {
-            // Arrange: crea una entry di log e definisce un callback che imposta una variabile di controllo.
-            var logEntry = new LogEntry(LogLevel.Debug, "Test log");
-            var callbackInvoked = false;
-            Action callback = () => callbackInvoked = true;
+            // Arrange: crea un provider non attachato.
+            var nonAttachedProvider = new Mock<ILogProvider>().Object;
 
-            _mockProvider1!.Setup(p => p.WriteAsync(It.IsAny<LogEntry>(), It.IsAny<Action>()))
-                .Returns(Task.CompletedTask);
-            _mockProvider2!.Setup(p => p.WriteAsync(It.IsAny<LogEntry>(), It.IsAny<Action>()))
-                .Returns(Task.CompletedTask);
-
-            // Act: esegue il logging asincrono, passando il callback.
-            await _logger!.LogAsync(logEntry, callback);
-
-            // Assert: controlla che il callback sia stato invocato.
-            Assert.IsTrue(callbackInvoked);
+            Assert.ThrowsException<LogProviderNotFoundException>(() =>
+            {
+                _logger!.DetachLogProvider(nonAttachedProvider);
+            });
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using Logging.Core.Enums;
+using Logging.Core.Errors;
 using Logging.Core.Models;
 
 namespace Logging.Presentation
@@ -14,7 +16,7 @@ namespace Logging.Presentation
         /// <summary>
         /// Indica il livello del log (ad esempio, Info, Warning, Error).
         /// </summary>
-        public LogLevel Level { get; set; }
+        public LogLevel LogLevel { get; set; }
         
         /// <summary>
         /// Contiene il messaggio del log.
@@ -27,9 +29,19 @@ namespace Logging.Presentation
         public DateTime Timestamp { get; set; }
         
         /// <summary>
+        /// Tag associato al log, ad esempio per raggruppamenti o filtraggio.
+        /// </summary>
+        public string Tag { get; set; } = "";
+        
+        /// <summary>
         /// Contiene il messaggio dell'eccezione, se presente.
         /// </summary>
-        public string Exception { get; set; }
+        public string ExceptionMessage { get; set; } = "";
+        
+        /// <summary>
+        /// Informazioni aggiuntive sotto forma di dizionario.
+        /// </summary>
+        public IReadOnlyDictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// Converte un'entità LogEntry in un'istanza di LogEntryViewModel.
@@ -38,12 +50,17 @@ namespace Logging.Presentation
         /// <returns>Una nuova istanza di LogEntryViewModel con i dati mappati dall'entità.</returns>
         public static LogEntryViewModel FromEntity(LogEntry entry)
         {
+            if (entry.Equals(null))
+                throw new LogEntryIsNullException(entry);
+
             return new LogEntryViewModel
             {
-                Level = entry.LogLevel,             // Mappa il livello di log dall'entità.
-                Message = entry.Message,             // Mappa il messaggio del log.
-                Timestamp = entry.Timestamp,         // Mappa il timestamp del log.
-                Exception = entry.Exception?.Message // Mappa il messaggio dell'eccezione, se presente.
+                LogLevel = entry.LogLevel,
+                Message = entry.Message,
+                Timestamp = entry.Timestamp,
+                Tag = entry.Tag,
+                ExceptionMessage = entry.Exception?.Message ?? "",
+                Metadata = entry.Metadata
             };
         }
 
@@ -54,17 +71,15 @@ namespace Logging.Presentation
         /// <returns>Un'istanza di LogEntryViewModel ottenuta dalla stringa JSON.</returns>
         public static LogEntryViewModel FromJson(string json)
         {
-            // Deserializza la stringa JSON nel LogEntryViewModel.
             return JsonSerializer.Deserialize<LogEntryViewModel>(json)!;
         }
 
         /// <summary>
         /// Serializza l'oggetto LogEntryViewModel in una stringa JSON.
         /// </summary>
-        /// <returns>La rappresentazione in formato JSON dell'istanza corrente di LogEntryViewModel.</returns>
+        /// <returns>La rappresentazione in formato JSON dell'istanza corrente.</returns>
         public string ToJson()
         {
-            // Serializza questo oggetto in formato JSON.
             return JsonSerializer.Serialize(this);
         }
     }

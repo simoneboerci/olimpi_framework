@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Logging.Core.Errors;
 using Logging.Core.Interfaces;
 using Logging.Core.Models;
 
@@ -12,71 +11,83 @@ namespace Logging.Services
     /// </summary>
     public sealed class Logger : ILogger
     {
+        private ILogQueue _logQueue;
+
         /// <summary>
         /// Collezione dei provider che gestiscono le operazioni di scrittura del log.
         /// </summary>
-        private readonly IEnumerable<ILogProvider> _logProviders;
+        private readonly IList<ILogProvider> _logProviders;
 
         /// <summary>
         /// Inizializza una nuova istanza della classe <see cref="Logger"/>.
         /// </summary>
         /// <param name="logProviders">I provider utilizzati per scrivere le voci di log.</param>
-        public Logger(IEnumerable<ILogProvider> logProviders)
+        public Logger(ILogQueue logQueue, IList<ILogProvider> logProviders)
         {
+            _logQueue = logQueue;
             _logProviders = logProviders;
         }
 
         /// <summary>
         /// Registra sincronicamente una voce di log inviandola a tutti i provider configurati.
         /// </summary>
-        /// <param name="entry">La voce di log da registrare.</param>
-        public void Log(LogEntry entry)
+        /// <param name="logEntry">La voce di log da registrare.</param>
+        public void Log(LogEntry logEntry)
         {
-            foreach (var provider in _logProviders)
+            if (logEntry.Equals(null))
             {
-                try
-                {
-                    // Scrive la voce di log tramite il provider corrente.
-                    provider.Write(entry);
-                }
-                catch (Exception ex)
-                {
-                    // Gestisce eventuali errori durante il logging e li segnala sulla console di errore.
-                    Console.Error.WriteLine($"Error logging: {ex.Message}");
-                }
+                throw new LogEntryIsNullException(logEntry);
             }
+
+            _logQueue.Enqueue(logEntry);
         }
 
-        /// <summary>
-        /// Registra asincronicamente una voce di log inviandola a tutti i provider in parallelo.
-        /// </summary>
-        /// <param name="entry">La voce di log da registrare.</param>
-        /// <param name="callback">Azione opzionale da eseguire dopo il completamento del logging.</param>
-        /// <returns>Un task che rappresenta l'operazione asincrona di logging.</returns>
-        public async Task LogAsync(LogEntry entry, Action callback = null)
+        public void SwapLogQueue(ILogQueue newLogQueue)
         {
-            // Lista per tenere traccia delle operazioni asincrone di logging per ciascun provider
-            var tasks = new List<Task>();
-            foreach (var provider in _logProviders)
+            _logQueue = newLogQueue ?? throw new LogQueueIsNullException(newLogQueue);
+        }
+
+        public void AttachLogProvider(ILogProvider logProvider, bool loadPreviousLogEntries = true)
+        {
+            if (logProvider == null)
             {
-                tasks.Add(Task.Run(async () =>
-                {
-                    try
-                    {
-                        // Invoca il metodo asincrono del provider per la scrittura della voce di log.
-                        await provider.WriteAsync(entry, callback);
-                    }
-                    catch (Exception ex)
-                    {
-                        // Gestisce eventuali errori e li segnala sulla console di errore.
-                        Console.Error.WriteLine($"Error logging: {ex.Message}");
-                    }
-                }));
+                throw new LogProviderIsNullException(logProvider);
             }
-            // Attende il completamento di tutte le operazioni asincrone.
-            await Task.WhenAll(tasks);
-            // Se è stato fornito un callback, lo invoca dopo il completamento di tutte le operazioni.
-            callback?.Invoke();
+
+            if (_logQueue != null)
+            {
+                if (loadPreviousLogEntries)
+                {
+                    foreach(LogEntry logEntry in _logQueue.GetLogs())
+                    {
+                        logProvider.DisplayLogEntry(logEntry);
+                    }
+                }
+
+                _logQueue.LogEntryAdded += logProvider.DisplayLogEntry;
+            }
+
+            _logProviders.Add(logProvider);
+        }
+
+        public void DetachLogProvider(ILogProvider logProvider)
+        {
+            if (logProvider == null)
+            {
+                throw new LogProviderIsNullException(logProvider);
+            }
+
+            if (!_logProviders.Contains(logProvider))
+            {
+                throw new LogProviderNotFoundException(logProvider);
+            }
+
+            if (_logQueue != null)
+            {
+                _logQueue.LogEntryAdded -= logProvider.DisplayLogEntry;
+            }
+
+            _logProviders.Remove(logProvider);
         }
     }
 }

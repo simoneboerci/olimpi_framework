@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Logging.Core.Models;
 
 namespace Logging.Core.Interfaces
@@ -17,13 +15,9 @@ namespace Logging.Core.Interfaces
         /// <param name="entry">L'istanza di <see cref="LogEntry"/> contenente i dettagli del log.</param>
         void Log(LogEntry entry);
 
-        /// <summary>
-        /// Metodo asincrono per registrare una voce di log.
-        /// Riceve un'istanza di <see cref="LogEntry"/> da scrivere e, opzionalmente, un callback da eseguire al termine dell'operazione.
-        /// </summary>
-        /// <param name="entry">L'istanza di <see cref="LogEntry"/> contenente i dettagli del log.</param>
-        /// <param name="callback">Un'azione opzionale da eseguire al completamento della scrittura del log.</param>
-        /// <returns>Un task che rappresenta l'operazione asincrona di logging.</returns>
-        Task LogAsync(LogEntry entry, Action callback = null);
+        void SwapLogQueue(ILogQueue newLogQueue);
+
+        void AttachLogProvider(ILogProvider logProvider, bool loadPreviousLogEntries = true);
+        void DetachLogProvider(ILogProvider logProvider);
     }
 }

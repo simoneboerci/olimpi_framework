@@ -7,5 +7,6 @@
   <ItemGroup>
     <ProjectReference Include="../ConsoleOperations/ConsoleOperations.csproj" />
   </ItemGroup>
+  
 
 </Project>
