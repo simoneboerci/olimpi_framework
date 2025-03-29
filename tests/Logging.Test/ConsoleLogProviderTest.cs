@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Logging.Core.Factories;
-using Logging.Core.Interfaces;
+using ConsoleOperations.Core;
+using ConsoleOperations.Core.Interfaces;
 using Logging.Data.Formatters;
 using Logging.Data.Providers;
 
@@ -28,7 +28,7 @@ namespace Logging.Test
             // Arrange:
             // Crea l'istanza di ISystemConsole usando la factory (rispettando il sistema operativo corrente).
             var systemConsoleFactory = new SystemConsoleFactory();
-            ISystemConsole systemConsole = systemConsoleFactory.Create();
+            ISystemConsole systemConsole = systemConsoleFactory.CreateSystemConsoleBasedOnPlatoform();
 
             // Istanzia il ConsoleLogProvider, iniettando il PlainTextLogFormatter e l'istanza di ISystemConsole.
             var provider = new ConsoleLogProvider(new PlainTextLogFormatter(), systemConsole);

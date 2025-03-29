@@ -3,9 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../ConsoleOperations/ConsoleOperations.csproj" />
-  </ItemGroup>
+  
 
 </Project>

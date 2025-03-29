@@ -1,6 +1,6 @@
 using System;
 
-namespace Logging.Core.Interfaces;
+namespace ConsoleOperations.Core.Interfaces;
 
 /// <summary>
 /// Interfaccia che rappresenta un sistema console per la gestione dell'output e delle risorse della console.
