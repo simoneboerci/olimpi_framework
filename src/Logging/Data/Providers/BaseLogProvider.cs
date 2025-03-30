@@ -7,52 +7,57 @@ namespace Logging.Data.Providers
 {
     /// <summary>
     /// Classe astratta che rappresenta un provider di log.
-    /// Implementa l'interfaccia <see cref="ILogProvider"/> e fornisce funzionalità comuni
-    /// per la formattazione delle entry di log.
+    /// Fornisce funzionalità comuni per la formattazione delle entry di log e definisce il meccanismo per visualizzarle.
+    /// Le classi derivate devono implementare il metodo astratto DisplayLogEntryImplementation per gestire
+    /// la scrittura dei log in maniera specifica (es. su file, console, etc.).
     /// </summary>
     public abstract class BaseLogProvider : ILogProvider
     {
         /// <summary>
-        /// Formatter utilizzato per convertire un <see cref="LogEntry"/> in una stringa formattata.
+        /// Formatter utilizzato per convertire un oggetto <see cref="LogEntry"/> in una stringa formattata.
         /// </summary>
         protected readonly ILogFormatter Formatter;
+        
+        /// <summary>
+        /// Funzione di filtro che permette di determinare se una specifica entry deve essere processata.
+        /// Se non viene specificato, tutte le entry vengono processate.
+        /// </summary>
+        protected readonly Func<LogEntry, bool> Filter;
 
         /// <summary>
-        /// Inizializza una nuova istanza di <see cref="BaseLogProvider"/> con il formatter specificato.
-        /// Solleva un'eccezione <see cref="ArgumentNullException"/> se il parametro formatter è null.
+        /// Inizializza una nuova istanza di <see cref="BaseLogProvider"/> con il formatter specificato e un filtro opzionale.
+        /// Se il parametro <paramref name="formatter"/> è null, viene sollevata un'eccezione ArgumentNullException.
         /// </summary>
         /// <param name="formatter">Il formatter da utilizzare per formattare le entry di log.</param>
-        protected BaseLogProvider(ILogFormatter formatter)
+        /// <param name="filter">Un delegato che consente di filtrare le entry di log; default accetta tutte le entry.</param>
+        protected BaseLogProvider(ILogFormatter formatter, Func<LogEntry, bool> filter = null)
         {
             Formatter = formatter ?? throw new ArgumentNullException(nameof(formatter));
+            Filter = filter ?? (entry => true);
         }
 
         /// <summary>
-        /// Metodo astratto per scrivere una voce di log in maniera sincrona.
-        /// Le classi derivate devono implementare la logica specifica per la scrittura del log.
+        /// Metodo pubblico per processare e visualizzare una voce di log.
+        /// Se il filtro applicato all'entry restituisce false, la voce di log viene ignorata.
+        /// Altrimenti, la entry viene formattata utilizzando il formatter e viene delegato il rendering al metodo astratto.
         /// </summary>
-        /// <param name="entry">L'entry di log da scrivere.</param>
-        public abstract void Write(LogEntry entry);
-
-        /// <summary>
-        /// Metodo astratto per scrivere una voce di log in maniera asincrona.
-        /// Le classi derivate devono implementare la logica specifica per la scrittura
-        /// del log in modo non bloccante, accettando un callback opzionale che verrà eseguito
-        /// al termine dell'operazione.
-        /// </summary>
-        /// <param name="entry">L'entry di log da scrivere.</param>
-        /// <param name="callback">Callback opzionale da invocare al termine della scrittura.</param>
-        /// <returns>Un task che rappresenta l'operazione asincrona di scrittura del log.</returns>
-        public abstract Task WriteAsync(LogEntry entry, Action callback = null);
-
-        /// <summary>
-        /// Metodo protetto che formatta una voce di log utilizzando il formatter in uso.
-        /// </summary>
-        /// <param name="entry">L'entry di log da formattare.</param>
-        /// <returns>Una stringa che rappresenta il log formattato.</returns>
-        protected string FormatLogEntry(LogEntry entry)
+        /// <param name="entry">L'entry di log da visualizzare.</param>
+        public void DisplayLogEntry(LogEntry entry)
         {
-            return Formatter.Format(entry);
+            if (!Filter(entry))
+            {
+                return;
+            }
+            // Formattta l'entry e invoca il metodo astratto per la visualizzazione.
+            DisplayLogEntryImplementation(entry, Formatter.Format(entry));
         }
+
+        /// <summary>
+        /// Metodo astratto che deve essere implementato dalle classi derivate per definire la logica specifica di scrittura della voce di log.
+        /// Ad esempio, un provider potrebbe scrivere il log su file o sulla console.
+        /// </summary>
+        /// <param name="entry">L'entry di log originale.</param>
+        /// <param name="formattedText">La stringa formattata ottenuta dal formatter.</param>
+        protected abstract void DisplayLogEntryImplementation(LogEntry entry, string formattedText);
     }
 }

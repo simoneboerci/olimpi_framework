@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using ConsoleOperations.Core.Interfaces;
 using Logging.Core.Interfaces;
 using Logging.Core.Models;
@@ -7,9 +6,10 @@ using Logging.Core.Models;
 namespace Logging.Data.Providers
 {
     /// <summary>
-    /// La classe ConsoleLogProvider gestisce il logging in console.
-    /// Estende BaseLogProvider per utilizzare un formatter comune e implementa i metodi sincrono e asincrono per la scrittura dei log.
-    /// Implementa inoltre IDisposable per la gestione delle risorse del sistema console.
+    /// La classe ConsoleLogProvider gestisce il logging verso la console.
+    /// Estende BaseLogProvider per utilizzare un formatter comune e implementare la logica per visualizzare
+    /// le entry di log sulla console.
+    /// Inoltre, implementa IDisposable per liberare le risorse (in particolare la gestione della system console).
     /// </summary>
     public class ConsoleLogProvider : BaseLogProvider, IDisposable
     {
@@ -18,56 +18,39 @@ namespace Logging.Data.Providers
 
         /// <summary>
         /// Inizializza una nuova istanza di ConsoleLogProvider.
-        /// Avvia il servizio di system console.
+        /// Avvia il servizio di system console e configura il formatter ereditato.
         /// </summary>
-        /// <param name="formatter">Il formatter usato per formattare le entry di log.</param>
         /// <param name="systemConsole">L'interfaccia per la gestione della console.</param>
-        public ConsoleLogProvider(ILogFormatter formatter, ISystemConsole systemConsole) : base(formatter)
+        /// <param name="formatter">Il formatter da utilizzare per formattare le entry di log.</param>
+        public ConsoleLogProvider(ISystemConsole systemConsole, ILogFormatter formatter) 
+            : base(formatter)
         {
             _systemConsole = systemConsole;
-            // Avvia eventuali operazioni di configurazione della console (es. apertura stream, configurazione del colore, ecc.).
+            // Avvia la console al momento dell'inizializzazione,
+            // così da preparare l'ambiente per la scrittura dei log.
             _systemConsole.Start();
         }
 
         /// <summary>
-        /// Scrive sincronicamente una voce di log sulla console.
-        /// Utilizza il formatter ereditato per formattare l'entry prima di inviarla alla console.
+        /// Implementazione del metodo astratto ereditato che si occupa della visualizzazione sincrona del log.
+        /// Formattta l'entry di log utilizzando il formatter configurato e invia il testo formattato alla console.
         /// </summary>
-        /// <param name="entry">L'entry di log da scrivere.</param>
-        public override void Write(LogEntry entry)
+        /// <param name="entry">L'entry di log originale.</param>
+        /// <param name="formattedText">La stringa formattata ottenuta dal formatter.</param>
+        protected override void DisplayLogEntryImplementation(LogEntry entry, string formattedText)
         {
-            // Format dell'entry utilizzando il formatter definito in BaseLogProvider.
-            string formatted = FormatLogEntry(entry);
-            // Scrive il log formattato sulla console.
-            _systemConsole.WriteLine(formatted);
+            // Invia il messaggio formattato alla console.
+            _systemConsole.WriteLine(formattedText);
         }
 
         /// <summary>
-        /// Scrive asincronicamente una voce di log sulla console.
-        /// Avvolge la chiamata sincrona in un Task per eseguire l'operazione in maniera non bloccante.
-        /// Se viene fornito un callback, lo invoca al termine della scrittura.
-        /// </summary>
-        /// <param name="entry">L'entry di log da scrivere.</param>
-        /// <param name="callback">Azione opzionale da eseguire al termine della scrittura.</param>
-        /// <returns>Un task che rappresenta l'operazione asincrona.</returns>
-        public override Task WriteAsync(LogEntry entry, Action callback = null)
-        {
-            // Esegue la scrittura in maniera asincrona.
-            return Task.Run(() =>
-            {
-                // Richiama il metodo sincrono Write per scrivere il log.
-                Write(entry);
-                // Invoca il callback, se definito.
-                callback?.Invoke();
-            });
-        }
-
-        /// <summary>
-        /// Libera le risorse gestite dalla classe, in particolare quelle della system console.
+        /// Libera le risorse gestite dalla classe, in particolare quella associata alla system console.
+        /// Chiama il Dispose() della system console e sopprime il finalizzatore.
         /// </summary>
         public void Dispose()
         {
             _systemConsole.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
