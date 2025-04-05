@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using StateManagement.Core.Interfaces;
 
-namespace StateManagement.Core;
+namespace StateManagement.Implementation;
 
 public class TransitionManager<TContext, TState> : ITransitionManager<TContext, TState>
 where TContext : IStateContext
