@@ -14,9 +14,7 @@ namespace cAlgo.Robots
     {
         [Parameter(DefaultValue = "Hello world!")]
         public string Message { get; set; }
-
-        Logger logger;
-
+        
         protected override void OnStart()
         {
             
