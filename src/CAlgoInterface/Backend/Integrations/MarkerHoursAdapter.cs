@@ -24,7 +24,19 @@ public class MarketHoursAdapter : IMarketHoursAdapter
 
     public cAlgo.API.Internals.MarketHours CAlgoMarketHours() => _cAlgoMarketHours;
 
-    public IReadOnlyList<ITradingSession> TradingSessions()
+    public IReadOnlyList<ITradingSession> TradingSessions => ConvertCAlgoTradingSessionsToTradingSessions();
+    public IReadOnlyList<ITradingHoliday> TradingHolidays => ConvertCAlgoTradingHolidaysToTradingHolidays();
+
+    public bool IsOpened() => _cAlgoMarketHours.IsOpened();
+    public bool IsOpened(DateTime dateTime) => _cAlgoMarketHours.IsOpened(dateTime);
+
+    public TimeSpan TimeTillClose() => _cAlgoMarketHours.TimeTillClose();
+    public TimeSpan TimeTillOpen() => _cAlgoMarketHours.TimeTillOpen();
+
+    public cAlgo.API.Internals.MarketHours ToCAlgoMarketHours(IMarketHoursAdapter marketHoursAdapter) => marketHoursAdapter.CAlgoMarketHours();
+    public IMarketHours ToMarketHours(cAlgo.API.Internals.MarketHours cAlgoMarketHours) => new MarketHoursAdapter(cAlgoMarketHours, _tradingSessionAdapter, _tradingHolidayAdapter);
+
+    private IReadOnlyList<ITradingSession> ConvertCAlgoTradingSessionsToTradingSessions()
     {
         var tradingSessions = new List<ITradingSession>();
         foreach (var session in _cAlgoMarketHours.Sessions)
@@ -33,9 +45,9 @@ public class MarketHoursAdapter : IMarketHoursAdapter
             tradingSessions.Add(tradingSession);
         }
 
-        return tradingSessions;
+        return tradingSessions.AsReadOnly();
     }
-    public IReadOnlyList<ITradingHoliday> TradingHolidays()
+    private IReadOnlyList<ITradingHoliday> ConvertCAlgoTradingHolidaysToTradingHolidays()
     {
         var tradingHolidays = new List<ITradingHoliday>();
         foreach (var holiday in _cAlgoMarketHours.Holidays)
@@ -44,21 +56,6 @@ public class MarketHoursAdapter : IMarketHoursAdapter
             tradingHolidays.Add(tradingHoliday);
         }
 
-        return tradingHolidays;   
-    }
-
-    IReadOnlyList<ITradingSession> IMarketHours.TradingSessions => throw new NotImplementedException();
-    IReadOnlyList<ITradingHoliday> IMarketHours.TradingHolidays => throw new NotImplementedException();
-
-    public bool IsOpened() => _cAlgoMarketHours.IsOpened();
-    public bool IsOpened(DateTime dateTime) => _cAlgoMarketHours.IsOpened(dateTime);
-
-    public TimeSpan TimeTillClose() => _cAlgoMarketHours.TimeTillClose();
-    public TimeSpan TimeTillOpen() => _cAlgoMarketHours.TimeTillOpen();
-
-    public cAlgo.API.Internals.MarketHours ToCAlgoMarketHours(IMarketHoursAdapter marketHoursAdapter) => _cAlgoMarketHours;
-    public IMarketHours ToMarketHours(cAlgo.API.Internals.MarketHours cAlgoMarketHours)
-    {
-        return new MarketHoursAdapter(cAlgoMarketHours, _tradingSessionAdapter, _tradingHolidayAdapter);
+        return tradingHolidays.AsReadOnly();   
     }
 }
