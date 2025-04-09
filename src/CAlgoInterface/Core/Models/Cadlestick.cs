@@ -1,8 +1,9 @@
 using System;
+using CAlgoInterface.Core.Interfaces;
 
 namespace CAlgoInterface.Core.Models;
 
-public readonly struct Candlestick : IEquatable<Candlestick>
+public readonly struct Candlestick : ICandlestick
 {
     public DateTime OpenTime { get; }
     public double Open { get; }
@@ -20,7 +21,7 @@ public readonly struct Candlestick : IEquatable<Candlestick>
         TickVolume = tickVolume;
     }
 
-    public bool Equals(Candlestick other) => this == other;
+    public bool Equals(ICandlestick other) => (ICandlestick)this == other;
 
     public override bool Equals(object obj)
     {
