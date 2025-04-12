@@ -1,1 +1,0 @@
-namespace CAlgoInterface.Backend.Services;

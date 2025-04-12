@@ -21,7 +21,7 @@ namespace CAlgoInterface.Test
         public void CAlgoAsset_ShouldReturnOriginalAsset()
         {
             // Act
-            var result = _assetAdapter!.CAlgoAsset();
+            var result = _assetAdapter!.GetCAlgoAsset();
 
             // Assert
             Assert.AreEqual(_mockCAlgoAsset!.Object, result);
@@ -64,7 +64,7 @@ namespace CAlgoInterface.Test
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(AssetAdapter));
-            Assert.AreEqual(newCAlgoAsset.Object, ((AssetAdapter)result).CAlgoAsset());
+            Assert.AreEqual(newCAlgoAsset.Object, ((AssetAdapter)result).GetCAlgoAsset());
         }
 
         [TestMethod]
@@ -72,14 +72,14 @@ namespace CAlgoInterface.Test
         {
             // Arrange
             var mockAssetAdapter = new Mock<IAssetAdapter>();
-            mockAssetAdapter.Setup(a => a.CAlgoAsset()).Returns(_mockCAlgoAsset!.Object);
+            mockAssetAdapter.Setup(a => a.GetCAlgoAsset()).Returns(_mockCAlgoAsset!.Object);
 
             // Act
             var result = _assetAdapter!.ToCAlgoAsset(mockAssetAdapter.Object);
 
             // Assert
             Assert.AreEqual(_mockCAlgoAsset.Object, result);
-            mockAssetAdapter.Verify(a => a.CAlgoAsset(), Times.Once);
+            mockAssetAdapter.Verify(a => a.GetCAlgoAsset(), Times.Once);
         }
 
         [TestMethod]
@@ -88,7 +88,7 @@ namespace CAlgoInterface.Test
             // Arrange
             var mockTargetAsset = new Mock<IAssetAdapter>();
             var mockTargetCAlgoAsset = new Mock<Asset>();
-            mockTargetAsset.Setup(a => a.CAlgoAsset()).Returns(mockTargetCAlgoAsset.Object);
+            mockTargetAsset.Setup(a => a.GetCAlgoAsset()).Returns(mockTargetCAlgoAsset.Object);
             _mockCAlgoAsset!.Setup(a => a.Convert(mockTargetCAlgoAsset.Object, 100)).Returns(200);
 
             // Act
@@ -96,7 +96,7 @@ namespace CAlgoInterface.Test
 
             // Assert
             Assert.AreEqual(200, result);
-            mockTargetAsset.Verify(a => a.CAlgoAsset(), Times.Once);
+            mockTargetAsset.Verify(a => a.GetCAlgoAsset(), Times.Once);
             _mockCAlgoAsset.Verify(a => a.Convert(mockTargetCAlgoAsset.Object, 100), Times.Once);
         }
 
