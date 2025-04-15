@@ -1,4 +1,4 @@
-namespace CAlgoInterface.Core.Enums;
+namespace OrderCreation;
 
 public enum StopTriggerMethod
 {
