@@ -1,6 +1,7 @@
 using Moq;
 using StateManagement.Core;
 using StateManagement.Core.Interfaces;
+using StateManagement.Implementation;
 
 namespace StateMachine.Test;
 
