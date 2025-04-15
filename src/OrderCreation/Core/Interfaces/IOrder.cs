@@ -1,9 +1,10 @@
-using CAlgoInterface.Core.Enums;
+using System;
 
-namespace CAlgoInterface.Core.Interfaces;
+namespace OrderCreation.Core.Interfaces;
 
-public interface IOrder
+public interface IOrder : IEquatable<IOrder>
 {
+    int Id { get; }
     TradeType TradeType { get; }
     string SymbolName { get; }
     double Volume { get; }
@@ -12,5 +13,4 @@ public interface IOrder
     double? TakeProfitPips { get; }
     string Comment { get; }
     bool HasTrailingStop { get; }
-    StopTriggerMethod? StopTriggerMethod { get; }
 }
