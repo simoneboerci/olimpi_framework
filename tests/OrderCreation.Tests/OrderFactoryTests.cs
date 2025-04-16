@@ -143,10 +143,11 @@ namespace OrderCreation.Tests
             ProtectionType? protectionType = ProtectionType.Absolute;
             double stopOrderPips = 10;
             double basePrice = 110.0;
+            StopTriggerMethod stopOrderTriggerMethod = StopTriggerMethod.Trade;
 
             // Act
             var stopOrder = _orderFactory!.CreateStopOrder(
-                id, tradeType, symbolName, volume, label, stopLossPips, takeProfitPips, comment, hasTrailingStop, stopLossTriggerMethod, targetPrice, expirationTime, protectionType, stopOrderPips, basePrice);
+                id, tradeType, symbolName, volume, label, stopLossPips, takeProfitPips, comment, hasTrailingStop, stopLossTriggerMethod, targetPrice, expirationTime, protectionType, stopOrderPips, basePrice, stopOrderTriggerMethod);
 
             // Assert
             Assert.IsNotNull(stopOrder);
@@ -165,6 +166,7 @@ namespace OrderCreation.Tests
             Assert.AreEqual(protectionType, stopOrder.ProtectionType);
             Assert.AreEqual(stopOrderPips, stopOrder.StopOrderPips);
             Assert.AreEqual(basePrice, stopOrder.BasePrice);
+            Assert.AreEqual(stopOrderTriggerMethod, stopOrder.StopOrderTriggerMethod);
         }
 
         [TestMethod]
