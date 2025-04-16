@@ -5,7 +5,7 @@ namespace OrderCreation.Core.Models;
 
 internal readonly struct MarketOrder : IMarketOrder
 {
-    public int Id { get; }
+    public Guid Id { get; }
     public TradeType TradeType { get; }
     public string SymbolName { get; }
     public double Volume { get; }
@@ -14,9 +14,10 @@ internal readonly struct MarketOrder : IMarketOrder
     public double? TakeProfitPips { get; }
     public string Comment { get; }
     public bool HasTrailingStop { get; }
+    public StopTriggerMethod? StopLossTriggerMethod { get; }
 
-    internal MarketOrder(int id, TradeType tradeType, string symbolName, double volume, string label,
-        double? stopLossPips, double? takeProfitPips, string comment, bool hasTrailingStop)
+    internal MarketOrder(Guid id, TradeType tradeType, string symbolName, double volume, string label,
+        double? stopLossPips, double? takeProfitPips, string comment, bool hasTrailingStop, StopTriggerMethod? stopLossTriggerMethod)
     {
         Id = id;
         TradeType = tradeType;
@@ -27,6 +28,7 @@ internal readonly struct MarketOrder : IMarketOrder
         TakeProfitPips = takeProfitPips;
         Comment = comment;
         HasTrailingStop = hasTrailingStop;
+        StopLossTriggerMethod = stopLossTriggerMethod;
     }
 
     public override bool Equals(object obj) => obj is IMarketOrder other && Equals(other);
@@ -37,7 +39,7 @@ internal readonly struct MarketOrder : IMarketOrder
         return Id == other.Id && TradeType == other.TradeType && SymbolName == other.SymbolName &&
                Volume.Equals(other.Volume) && Label == other.Label && StopLossPips.Equals(other.StopLossPips) &&
                TakeProfitPips.Equals(other.TakeProfitPips) && Comment == other.Comment &&
-               HasTrailingStop == other.HasTrailingStop;
+               HasTrailingStop == other.HasTrailingStop && StopLossTriggerMethod == other.StopLossTriggerMethod;
     }
 
 
@@ -46,12 +48,13 @@ internal readonly struct MarketOrder : IMarketOrder
     {
         return $"MarketOrder(Id: {Id}, TradeType: {TradeType}, SymbolName: {SymbolName}, Volume: {Volume}, " +
                $"Label: {Label}, StopLossPips: {StopLossPips}, TakeProfitPips: {TakeProfitPips}, " +
-               $"Comment: {Comment}, HasTrailingStop: {HasTrailingStop})";
+               $"Comment: {Comment}, HasTrailingStop: {HasTrailingStop}, StopLossTriggerMethod: {StopLossTriggerMethod})";
     }
 
     public override int GetHashCode()
     {
         var hash = new HashCode();
+
         hash.Add(Id);
         hash.Add(TradeType);
         hash.Add(SymbolName);
@@ -61,6 +64,8 @@ internal readonly struct MarketOrder : IMarketOrder
         hash.Add(TakeProfitPips);
         hash.Add(Comment);
         hash.Add(HasTrailingStop);
+        hash.Add(StopLossTriggerMethod);
+
         return hash.ToHashCode();
     }
 

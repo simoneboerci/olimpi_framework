@@ -6,7 +6,7 @@ namespace OrderCreation.Core.Models;
 
 internal readonly struct StopOrder : IStopOrder
 {
-    public int Id { get; }
+    public Guid Id { get; }
     public TradeType TradeType { get; }
     public string SymbolName { get; }
     public double Volume { get; }
@@ -15,6 +15,7 @@ internal readonly struct StopOrder : IStopOrder
     public double? TakeProfitPips { get; }
     public string Comment { get; }
     public bool HasTrailingStop { get; }
+    public StopTriggerMethod? StopLossTriggerMethod { get; }
 
     public double TargetPrice { get; }
     public DateTime? ExpirationTime { get; }
@@ -23,8 +24,8 @@ internal readonly struct StopOrder : IStopOrder
     public double StopOrderPips { get; }
     public double BasePrice { get; }
 
-    internal StopOrder(int id, TradeType tradeType, string symbolName, double volume, string label,
-        double? stopLossPips, double? takeProfitPips, string comment, bool hasTrailingStop,
+    internal StopOrder(Guid id, TradeType tradeType, string symbolName, double volume, string label,
+        double? stopLossPips, double? takeProfitPips, string comment, bool hasTrailingStop, StopTriggerMethod? stopLossTriggerMethod,
         double targetPrice, DateTime? expirationTime, ProtectionType? protectionType,
         double stopOrderPips, double basePrice)
     {
@@ -37,9 +38,12 @@ internal readonly struct StopOrder : IStopOrder
         TakeProfitPips = takeProfitPips;
         Comment = comment;
         HasTrailingStop = hasTrailingStop;
+        StopLossTriggerMethod = stopLossTriggerMethod;
+
         TargetPrice = targetPrice;
         ExpirationTime = expirationTime;
         ProtectionType = protectionType;
+
         StopOrderPips = stopOrderPips;
         BasePrice = basePrice;
     }
@@ -53,7 +57,7 @@ internal readonly struct StopOrder : IStopOrder
         return Id == other.Id && TradeType == other.TradeType && SymbolName == other.SymbolName &&
                Volume.Equals(other.Volume) && Label == other.Label && StopLossPips.Equals(other.StopLossPips) &&
                TakeProfitPips.Equals(other.TakeProfitPips) && Comment == other.Comment &&
-               HasTrailingStop == other.HasTrailingStop && StopOrderPips == other.StopOrderPips &&
+               HasTrailingStop == other.HasTrailingStop && StopLossTriggerMethod == other.StopLossTriggerMethod && StopOrderPips == other.StopOrderPips &&
                BasePrice == other.BasePrice && TargetPrice == other.TargetPrice &&
                ExpirationTime == other.ExpirationTime && ProtectionType == other.ProtectionType;
     }
@@ -62,7 +66,7 @@ internal readonly struct StopOrder : IStopOrder
     {
         return $"StopOrder(Id: {Id}, TradeType: {TradeType}, SymbolName: {SymbolName}, Volume: {Volume}, " +
                $"Label: {Label}, StopLossPips: {StopLossPips}, TakeProfitPips: {TakeProfitPips}, " +
-               $"Comment: {Comment}, HasTrailingStop: {HasTrailingStop}, StopOrderPips: {StopOrderPips}, " +
+               $"Comment: {Comment}, HasTrailingStop: {HasTrailingStop}, StopLossTriggerMethod: {StopLossTriggerMethod}, StopOrderPips: {StopOrderPips}, " +
                $"BasePrice: {BasePrice}, TargetPrice: {TargetPrice}, ExpirationTime: {ExpirationTime}, " +
                $"ProtectionType: {ProtectionType})";
     }
@@ -70,6 +74,7 @@ internal readonly struct StopOrder : IStopOrder
     public override int GetHashCode()
     {
         var hash = new HashCode();
+
         hash.Add(Id);
         hash.Add(TradeType);
         hash.Add(SymbolName);
@@ -79,11 +84,15 @@ internal readonly struct StopOrder : IStopOrder
         hash.Add(TakeProfitPips);
         hash.Add(Comment);
         hash.Add(HasTrailingStop);
+        hash.Add(StopLossTriggerMethod);
+
         hash.Add(StopOrderPips);
         hash.Add(BasePrice);
+
         hash.Add(TargetPrice);
         hash.Add(ExpirationTime);
         hash.Add(ProtectionType);
+
         return hash.ToHashCode();
     }
 
