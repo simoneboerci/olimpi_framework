@@ -113,7 +113,8 @@ public class OrderFactory : IOrderFactory
         DateTime? expirationTime,
         ProtectionType? protectionType,
         double stopOrderPips,
-        double basePrice
+        double basePrice,
+        StopTriggerMethod? stopOrderTriggerMethod
     )
     {
         return new StopOrder(
@@ -131,7 +132,8 @@ public class OrderFactory : IOrderFactory
             expirationTime,
             protectionType,
             stopOrderPips,
-            basePrice
+            basePrice,
+            stopOrderTriggerMethod
         );
     }
 
@@ -171,8 +173,8 @@ public class OrderFactory : IOrderFactory
             protectionType,
             stopOrderPips,
             basePrice,
-            stopLimitRangePips,
-            stopOrderTriggerMethod
+            stopOrderTriggerMethod,
+            stopLimitRangePips
         );
     }
 }

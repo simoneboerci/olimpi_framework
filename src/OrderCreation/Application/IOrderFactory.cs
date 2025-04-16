@@ -66,7 +66,8 @@ public interface IOrderFactory
         DateTime? expirationTime,
         ProtectionType? protectionType,
         double stopOrderPips,
-        double basePrice
+        double basePrice,
+        StopTriggerMethod? stopOrderTriggerMethod
     );
 
     IStopLimitOrder CreateStopLimitOrder(
