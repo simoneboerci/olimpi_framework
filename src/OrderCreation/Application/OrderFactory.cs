@@ -8,7 +8,7 @@ namespace OrderCreation.Application;
 public class OrderFactory : IOrderFactory
 {
     public IMarketOrder CreateMarketOrder(
-        int id,
+        Guid id,
         TradeType tradeType,
         string symbolName,
         double? volume,
@@ -16,7 +16,8 @@ public class OrderFactory : IOrderFactory
         double? stopLossPips,
         double? takeProfitPips,
         string comment,
-        bool? hasTrailingStop
+        bool? hasTrailingStop,
+        StopTriggerMethod? stopLossTriggerMethod
     )
     {
         return new MarketOrder(
@@ -28,12 +29,13 @@ public class OrderFactory : IOrderFactory
             stopLossPips,
             takeProfitPips,
             comment ?? string.Empty,
-            hasTrailingStop ?? false
+            hasTrailingStop ?? false,
+            stopLossTriggerMethod
         );
     }
 
     public IMarketRangeOrder CreateMarketRangeOrder(
-        int id,
+        Guid id,
         TradeType tradeType,
         string symbolName,
         double? volume,
@@ -42,6 +44,7 @@ public class OrderFactory : IOrderFactory
         double? takeProfitPips,
         string comment,
         bool? hasTrailingStop,
+        StopTriggerMethod? stopLossTriggerMethod,
         double marketRangePips,
         double basePrice
     )
@@ -56,13 +59,14 @@ public class OrderFactory : IOrderFactory
             takeProfitPips,
             comment ?? string.Empty,
             hasTrailingStop ?? false,
+            stopLossTriggerMethod,
             marketRangePips,
             basePrice
         );
     }
 
     public ILimitOrder CreateLimitOrder(
-        int id,
+        Guid id,
         TradeType tradeType,
         string symbolName,
         double? volume,
@@ -71,6 +75,7 @@ public class OrderFactory : IOrderFactory
         double? takeProfitPips,
         string comment,
         bool? hasTrailingStop,
+        StopTriggerMethod? stopLossTriggerMethod,
         double targetPrice,
         DateTime? expirationTime,
         ProtectionType? protectionType
@@ -86,6 +91,7 @@ public class OrderFactory : IOrderFactory
             takeProfitPips,
             comment ?? string.Empty,
             hasTrailingStop ?? false,
+            stopLossTriggerMethod,
             targetPrice,
             expirationTime,
             protectionType
@@ -93,7 +99,7 @@ public class OrderFactory : IOrderFactory
     }
 
     public IStopOrder CreateStopOrder(
-        int id,
+        Guid id,
         TradeType tradeType,
         string symbolName,
         double? volume,
@@ -102,6 +108,7 @@ public class OrderFactory : IOrderFactory
         double? takeProfitPips,
         string comment,
         bool? hasTrailingStop,
+        StopTriggerMethod? stopLossTriggerMethod,
         double targetPrice,
         DateTime? expirationTime,
         ProtectionType? protectionType,
@@ -119,6 +126,7 @@ public class OrderFactory : IOrderFactory
             takeProfitPips,
             comment ?? string.Empty,
             hasTrailingStop ?? false,
+            stopLossTriggerMethod,
             targetPrice,
             expirationTime,
             protectionType,
@@ -128,7 +136,7 @@ public class OrderFactory : IOrderFactory
     }
 
     public IStopLimitOrder CreateStopLimitOrder(
-        int id,
+        Guid id,
         TradeType tradeType,
         string symbolName,
         double? volume,
@@ -137,12 +145,14 @@ public class OrderFactory : IOrderFactory
         double? takeProfitPips,
         string comment,
         bool? hasTrailingStop,
+        StopTriggerMethod? stopLossTriggerMethod,
         double targetPrice,
         DateTime? expirationTime,
         ProtectionType? protectionType,
         double stopOrderPips,
         double basePrice,
-        double stopLimitRangePips
+        double stopLimitRangePips,
+        StopTriggerMethod? stopOrderTriggerMethod
     )
     {
         return new StopLimitOrder(
@@ -155,12 +165,14 @@ public class OrderFactory : IOrderFactory
             takeProfitPips,
             comment ?? string.Empty,
             hasTrailingStop ?? false,
+            stopLossTriggerMethod,
             targetPrice,
             expirationTime,
             protectionType,
             stopOrderPips,
             basePrice,
-            stopLimitRangePips
+            stopLimitRangePips,
+            stopOrderTriggerMethod
         );
     }
 }

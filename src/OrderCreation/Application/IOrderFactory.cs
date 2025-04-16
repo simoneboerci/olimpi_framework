@@ -8,19 +8,7 @@ namespace OrderCreation.Application;
 public interface IOrderFactory
 {
     IMarketOrder CreateMarketOrder(
-        int id,
-        TradeType tradeType,
-        string symbolName,
-        double? volume,
-        string? label,
-        double? stopLossPips,
-        double? takeProfitPips,
-        string? comment,
-        bool? hasTrailingStop
-    );
-
-    IMarketRangeOrder CreateMarketRangeOrder(
-        int id,
+        Guid id,
         TradeType tradeType,
         string symbolName,
         double? volume,
@@ -29,12 +17,26 @@ public interface IOrderFactory
         double? takeProfitPips,
         string? comment,
         bool? hasTrailingStop,
+        StopTriggerMethod? stopLossTriggerMethod
+    );
+
+    IMarketRangeOrder CreateMarketRangeOrder(
+        Guid id,
+        TradeType tradeType,
+        string symbolName,
+        double? volume,
+        string? label,
+        double? stopLossPips,
+        double? takeProfitPips,
+        string? comment,
+        bool? hasTrailingStop,
+        StopTriggerMethod? stopLossTriggerMethod,
         double marketRangePips,
         double masePrice
     );
 
     ILimitOrder CreateLimitOrder(
-        int id,
+        Guid id,
         TradeType tradeType,
         string symbolName,
         double? volume,
@@ -43,13 +45,14 @@ public interface IOrderFactory
         double? takeProfitPips,
         string? comment,
         bool? hasTrailingStop,
+        StopTriggerMethod? stopLossTriggerMethod,
         double targetPrice,
         DateTime? expirationTime,
         ProtectionType? protectionType
     );
 
     IStopOrder CreateStopOrder(
-        int id,
+        Guid id,
         TradeType tradeType,
         string symbolName,
         double? volume,
@@ -58,6 +61,7 @@ public interface IOrderFactory
         double? takeProfitPips,
         string? comment,
         bool? hasTrailingStop,
+        StopTriggerMethod? stopLossTriggerMethod,
         double targetPrice,
         DateTime? expirationTime,
         ProtectionType? protectionType,
@@ -66,7 +70,7 @@ public interface IOrderFactory
     );
 
     IStopLimitOrder CreateStopLimitOrder(
-        int id,
+        Guid id,
         TradeType tradeType,
         string symbolName,
         double? volume,
@@ -75,11 +79,13 @@ public interface IOrderFactory
         double? takeProfitPips,
         string? comment,
         bool? hasTrailingStop,
+        StopTriggerMethod? stopLossTriggerMethod,
         double targetPrice,
         DateTime? expirationTime,
         ProtectionType? protectionType,
         double stopOrderPips,
         double basePrice,
-        double stopLimitRangePips
+        double stopLimitRangePips,
+        StopTriggerMethod? stopOrderTriggerMethod
     );
 }
