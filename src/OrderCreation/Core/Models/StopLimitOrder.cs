@@ -23,9 +23,9 @@ internal readonly struct StopLimitOrder : IStopLimitOrder
 
     public double StopOrderPips { get; }
     public double BasePrice { get; }
+    public StopTriggerMethod? StopOrderTriggerMethod { get; }
 
     public double StopLimitRangePips { get; }
-    public StopTriggerMethod? StopOrderTriggerMethod { get; }
 
     internal StopLimitOrder(
         Guid id,
@@ -43,11 +43,12 @@ internal readonly struct StopLimitOrder : IStopLimitOrder
         ProtectionType? protectionType,
         double stopOrderPips,
         double basePrice,
-        double stopLimitRangePips,
-        StopTriggerMethod? stopOrderTriggerMethod
+        StopTriggerMethod? stopOrderTriggerMethod,
+        double stopLimitRangePips
     )
     {
         Id = id;
+        TradeType = tradeType;
         SymbolName = symbolName;
         Volume = volume;
         Label = label;
@@ -63,9 +64,9 @@ internal readonly struct StopLimitOrder : IStopLimitOrder
 
         StopOrderPips = stopOrderPips;
         BasePrice = basePrice;
+        StopOrderTriggerMethod = stopOrderTriggerMethod;
 
         StopLimitRangePips = stopLimitRangePips;
-        StopOrderTriggerMethod = stopOrderTriggerMethod;
     }
 
     public override bool Equals(object obj) => obj is IStopLimitOrder other && Equals(other);
@@ -116,9 +117,9 @@ internal readonly struct StopLimitOrder : IStopLimitOrder
 
         hash.Add(StopOrderPips);
         hash.Add(BasePrice);
+        hash.Add(StopOrderTriggerMethod);
 
         hash.Add(StopLimitRangePips);
-        hash.Add(StopOrderTriggerMethod);
 
         return hash.ToHashCode();
     }
