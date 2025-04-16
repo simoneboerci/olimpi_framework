@@ -4,7 +4,7 @@ namespace OrderCreation.Core.Interfaces;
 
 public interface IOrder : IEquatable<IOrder>
 {
-    int Id { get; }
+    Guid Id { get; }
     TradeType TradeType { get; }
     string SymbolName { get; }
     double Volume { get; }
@@ -13,4 +13,5 @@ public interface IOrder : IEquatable<IOrder>
     double? TakeProfitPips { get; }
     string Comment { get; }
     bool HasTrailingStop { get; }
+    StopTriggerMethod? StopLossTriggerMethod { get; }
 }
