@@ -23,11 +23,12 @@ internal readonly struct StopOrder : IStopOrder
 
     public double StopOrderPips { get; }
     public double BasePrice { get; }
+    public StopTriggerMethod? StopOrderTriggerMethod { get; }
 
     internal StopOrder(Guid id, TradeType tradeType, string symbolName, double volume, string label,
         double? stopLossPips, double? takeProfitPips, string comment, bool hasTrailingStop, StopTriggerMethod? stopLossTriggerMethod,
         double targetPrice, DateTime? expirationTime, ProtectionType? protectionType,
-        double stopOrderPips, double basePrice)
+        double stopOrderPips, double basePrice, StopTriggerMethod? stopOrderTriggerMethod)
     {
         Id = id;
         TradeType = tradeType;
@@ -46,6 +47,7 @@ internal readonly struct StopOrder : IStopOrder
 
         StopOrderPips = stopOrderPips;
         BasePrice = basePrice;
+        StopOrderTriggerMethod = stopOrderTriggerMethod;
     }
 
     public override bool Equals(object obj) => obj is IStopOrder other && Equals(other);
@@ -59,7 +61,7 @@ internal readonly struct StopOrder : IStopOrder
                TakeProfitPips.Equals(other.TakeProfitPips) && Comment == other.Comment &&
                HasTrailingStop == other.HasTrailingStop && StopLossTriggerMethod == other.StopLossTriggerMethod && StopOrderPips == other.StopOrderPips &&
                BasePrice == other.BasePrice && TargetPrice == other.TargetPrice &&
-               ExpirationTime == other.ExpirationTime && ProtectionType == other.ProtectionType;
+               ExpirationTime == other.ExpirationTime && ProtectionType == other.ProtectionType && StopOrderTriggerMethod == other.StopOrderTriggerMethod;
     }
 
     public override string ToString()
@@ -68,7 +70,7 @@ internal readonly struct StopOrder : IStopOrder
                $"Label: {Label}, StopLossPips: {StopLossPips}, TakeProfitPips: {TakeProfitPips}, " +
                $"Comment: {Comment}, HasTrailingStop: {HasTrailingStop}, StopLossTriggerMethod: {StopLossTriggerMethod}, StopOrderPips: {StopOrderPips}, " +
                $"BasePrice: {BasePrice}, TargetPrice: {TargetPrice}, ExpirationTime: {ExpirationTime}, " +
-               $"ProtectionType: {ProtectionType})";
+               $"ProtectionType: {ProtectionType}, StopOrderTriggerMethod: {StopOrderTriggerMethod})";
     }
 
     public override int GetHashCode()
@@ -86,12 +88,13 @@ internal readonly struct StopOrder : IStopOrder
         hash.Add(HasTrailingStop);
         hash.Add(StopLossTriggerMethod);
 
-        hash.Add(StopOrderPips);
-        hash.Add(BasePrice);
-
         hash.Add(TargetPrice);
         hash.Add(ExpirationTime);
         hash.Add(ProtectionType);
+
+        hash.Add(StopOrderPips);
+        hash.Add(BasePrice);
+        hash.Add(StopOrderTriggerMethod);
 
         return hash.ToHashCode();
     }
