@@ -27,7 +27,8 @@ public readonly struct CAlgoMarketRangeOrderStruct
         double? takeProfitPips,
         string comment,
         bool hasTrailingStop,
-        StopTriggerMethod? stopTriggerMethod)
+        StopTriggerMethod? stopTriggerMethod
+    )
     {
         TradeType = tradeType;
         SymbolName = symbolName;
