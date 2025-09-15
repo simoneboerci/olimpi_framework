@@ -4,24 +4,45 @@ using OrderCreation.Core.Interfaces;
 
 namespace OrderCreation.Core.Models;
 
+/// <summary>
+/// Struttura che implementa <see cref="ILimitOrder"/> e rappresenta un ordine limite di trading.
+/// Espone tutte le proprietà di un ordine limite, inclusi identificatori, tipo di trade, volume, prezzi, scadenza e tipo di protezione.
+/// Implementa l'uguaglianza e l'hash code per confronti e utilizzo in collezioni.
+/// </summary>
 internal readonly struct LimitOrder : ILimitOrder
 {
+    /// <inheritdoc/>
     public Guid Id { get; }
+    /// <inheritdoc/>
     public TradeType TradeType { get; }
+    /// <inheritdoc/>
     public string SymbolName { get; }
+    /// <inheritdoc/>
     public double Volume { get; }
+    /// <inheritdoc/>
     public string Label { get; }
+    /// <inheritdoc/>
     public double? StopLossPips { get; }
+    /// <inheritdoc/>
     public double? TakeProfitPips { get; }
+    /// <inheritdoc/>
     public string Comment { get; }
+    /// <inheritdoc/>
     public bool HasTrailingStop { get; }
+    /// <inheritdoc/>
     public StopTriggerMethod? StopLossTriggerMethod { get; }
 
+    /// <inheritdoc/>
     public double TargetPrice { get; }
+    /// <inheritdoc/>
     public DateTime? ExpirationTime { get; }
+    /// <inheritdoc/>
     public ProtectionType? ProtectionType { get; }
 
-    internal LimitOrder(Guid id, TradeType tradeType, string symbolName, double volume, string label,
+    /// <summary>
+    /// Costruttore che inizializza tutte le proprietà dell'ordine limite.
+    /// </summary>
+    public LimitOrder(Guid id, TradeType tradeType, string symbolName, double volume, string label,
         double? stopLossPips, double? takeProfitPips, string comment, bool hasTrailingStop, StopTriggerMethod? stopLossTriggerMethod,
         double targetPrice, DateTime? expirationTime, ProtectionType? protectionType)
     {
@@ -41,10 +62,16 @@ internal readonly struct LimitOrder : ILimitOrder
         ProtectionType = protectionType;
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object obj) => obj is ILimitOrder other && Equals(other);
+
+    /// <inheritdoc/>
     public bool Equals(IOrder other) => other is ILimitOrder limitOrder && Equals(limitOrder);
+
+    /// <inheritdoc/>
     public bool Equals(IPendingOrder other) => other is ILimitOrder limitOrder && Equals(limitOrder);
 
+    /// <inheritdoc/>
     public bool Equals(ILimitOrder other)
     {
         return Id == other.Id && TradeType == other.TradeType && SymbolName == other.SymbolName &&
@@ -54,6 +81,9 @@ internal readonly struct LimitOrder : ILimitOrder
                ExpirationTime == other.ExpirationTime && ProtectionType == other.ProtectionType;
     }
 
+    /// <summary>
+    /// Restituisce una rappresentazione testuale dell'ordine limite.
+    /// </summary>
     public override string ToString()
     {
         return $"LimitOrder(Id: {Id}, TradeType: {TradeType}, SymbolName: {SymbolName}, Volume: {Volume}, " +
@@ -62,6 +92,9 @@ internal readonly struct LimitOrder : ILimitOrder
                $"TargetPrice: {TargetPrice}, ExpirationTime: {ExpirationTime}, ProtectionType: {ProtectionType}";
     }
 
+    /// <summary>
+    /// Restituisce il codice hash dell'ordine limite.
+    /// </summary>
     public override int GetHashCode()
     {
         var hash = new HashCode();
@@ -84,6 +117,13 @@ internal readonly struct LimitOrder : ILimitOrder
         return hash.ToHashCode();
     }
 
+    /// <summary>
+    /// Operatore di uguaglianza tra due ordini limite.
+    /// </summary>
     public static bool operator == (LimitOrder left, LimitOrder right) => left.Equals(right);
+
+    /// <summary>
+    /// Operatore di disuguaglianza tra due ordini limite.
+    /// </summary>
     public static bool operator != (LimitOrder left, LimitOrder right) => !left.Equals(right);
 }

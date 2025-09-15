@@ -1,33 +1,34 @@
-namespace OrderCreation;
+namespace OrderCreation.Core.Enums;
 
+/// <summary>
+/// Enum che rappresenta il metodo di trigger utilizzato per attivare ordini Stop e Stop Loss.
+/// Ogni valore definisce la logica di prezzo e conferma necessaria per attivare l'ordine.
+/// </summary>
 public enum StopTriggerMethod
 {
-    //
-    // Riepilogo:
-    //     Trade method uses default trigger behavior for Stop orders. Buy order and Stop
-    //     Loss for Sell position will be triggered when Ask >= order price. Sell order
-    //     and Stop Loss for Buy position will be triggered when Bid <= order price.
+    /// <summary>
+    /// Usa il comportamento di trigger predefinito per gli ordini Stop.
+    /// Buy e Stop Loss per Sell vengono attivati quando Ask >= prezzo ordine.
+    /// Sell e Stop Loss per Buy vengono attivati quando Bid <= prezzo ordine.
+    /// </summary>
     Trade,
-    //
-    // Riepilogo:
-    //     Opposite method uses opposite price for order triggering. Buy order and Stop
-    //     Loss for Sell position will be triggered when Bid >= order price. Sell order
-    //     and Stop Loss for Buy position will be triggered when Ask <= order price.
+
+    /// <summary>
+    /// Usa il prezzo opposto per il trigger dell'ordine.
+    /// Buy e Stop Loss per Sell vengono attivati quando Bid >= prezzo ordine.
+    /// Sell e Stop Loss per Buy vengono attivati quando Ask <= prezzo ordine.
+    /// </summary>
     Opposite,
-    //
-    // Riepilogo:
-    //     Uses default prices for order triggering, but waits for additional confirmation
-    //     - two consecutive prices should meet criteria to trigger order. Buy order and
-    //     Stop Loss for Sell position will be triggered when two consecutive Ask prices
-    //     >= order price. Sell order and Stop Loss for Buy position will be triggered when
-    //     two consecutive Bid prices <= order price.
+
+    /// <summary>
+    /// Usa i prezzi predefiniti, ma richiede conferma: due Ask consecutivi >= prezzo ordine per Buy/Stop Loss Sell,
+    /// due Bid consecutivi <= prezzo ordine per Sell/Stop Loss Buy.
+    /// </summary>
     DoubleTrade,
-    //
-    // Riepilogo:
-    //     Uses opposite prices for order triggering, and waits for additional confirmation
-    //     - two consecutive prices should meet criteria to trigger order. Buy order and
-    //     Stop Loss for Sell position will be triggered when two consecutive Bid prices
-    //     >= order price. Sell order and Stop Loss for Buy position will be triggered when
-    //     two consecutive Ask prices <= order price.
+
+    /// <summary>
+    /// Usa prezzi opposti e richiede conferma: due Bid consecutivi >= prezzo ordine per Buy/Stop Loss Sell,
+    /// due Ask consecutivi <= prezzo ordine per Sell/Stop Loss Buy.
+    /// </summary>
     DoubleOpposite
 }

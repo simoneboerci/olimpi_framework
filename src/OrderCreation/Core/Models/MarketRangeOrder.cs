@@ -1,24 +1,45 @@
 using System;
+using OrderCreation.Core.Enums;
 using OrderCreation.Core.Interfaces;
 
 namespace OrderCreation.Core.Models;
 
+/// <summary>
+/// Struttura che implementa <see cref="IMarketRangeOrder"/> e rappresenta un ordine di mercato con range di trading.
+/// Espone tutte le proprietà di un ordine di mercato con range, inclusi identificatori, tipo di trade, volume, livelli di stop loss e take profit, etichetta, commento, trailing stop, metodo di trigger, range di prezzo e prezzo base.
+/// Implementa l'uguaglianza e l'hash code per confronti e utilizzo in collezioni.
+/// </summary>
 internal readonly struct MarketRangeOrder : IMarketRangeOrder
 {
+    /// <inheritdoc/>
     public Guid Id { get; }
+    /// <inheritdoc/>
     public TradeType TradeType { get; }
+    /// <inheritdoc/>
     public string SymbolName { get; }
+    /// <inheritdoc/>
     public double Volume { get; }
+    /// <inheritdoc/>
     public string Label { get; }
+    /// <inheritdoc/>
     public double? StopLossPips { get; }
+    /// <inheritdoc/>
     public double? TakeProfitPips { get; }
+    /// <inheritdoc/>
     public string Comment { get; }
+    /// <inheritdoc/>
     public bool HasTrailingStop { get; }
+    /// <inheritdoc/>
     public StopTriggerMethod? StopLossTriggerMethod { get; }
 
+    /// <inheritdoc/>
     public double MarketRangePips { get; }
+    /// <inheritdoc/>
     public double BasePrice { get; }
 
+    /// <summary>
+    /// Costruttore che inizializza tutte le proprietà dell'ordine di mercato con range.
+    /// </summary>
     internal MarketRangeOrder(Guid id, TradeType tradeType, string symbolName, double volume, string label,
         double? stopLossPips, double? takeProfitPips, string comment, bool hasTrailingStop, StopTriggerMethod? stopLossTriggerMethod,
         double marketRangePips, double basePrice)
@@ -38,10 +59,16 @@ internal readonly struct MarketRangeOrder : IMarketRangeOrder
         BasePrice = basePrice;
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object obj) => obj is IMarketRangeOrder other && Equals(other);
+
+    /// <inheritdoc/>
     public bool Equals(IOrder other) => other is IMarketRangeOrder marketRangeOrder && Equals(marketRangeOrder);
+
+    /// <inheritdoc/>
     public bool Equals(IMarketOrder other) => other is IMarketRangeOrder marketRangeOrder && Equals(marketRangeOrder);
 
+    /// <inheritdoc/>
     public bool Equals(IMarketRangeOrder other)
     {
         return Id == other.Id && TradeType == other.TradeType && SymbolName == other.SymbolName &&
@@ -51,6 +78,9 @@ internal readonly struct MarketRangeOrder : IMarketRangeOrder
                BasePrice == other.BasePrice;
     }
 
+    /// <summary>
+    /// Restituisce una rappresentazione testuale dell'ordine di mercato con range.
+    /// </summary>
     public override string ToString()
     {
         return $"MarketRangeOrder(Id: {Id}, TradeType: {TradeType}, SymbolName: {SymbolName}, Volume: {Volume}, " +
@@ -59,6 +89,9 @@ internal readonly struct MarketRangeOrder : IMarketRangeOrder
                $"BasePrice: {BasePrice})";
     }
 
+    /// <summary>
+    /// Restituisce il codice hash dell'ordine di mercato con range.
+    /// </summary>
     public override int GetHashCode()
     {
         var hash = new HashCode();
@@ -80,6 +113,13 @@ internal readonly struct MarketRangeOrder : IMarketRangeOrder
         return hash.ToHashCode();
     }
 
+    /// <summary>
+    /// Operatore di uguaglianza tra due ordini di mercato con range.
+    /// </summary>
     public static bool operator == (MarketRangeOrder left, MarketRangeOrder right) => left.Equals(right);
+
+    /// <summary>
+    /// Operatore di disuguaglianza tra due ordini di mercato con range.
+    /// </summary>
     public static bool operator != (MarketRangeOrder left, MarketRangeOrder right) => !left.Equals(right);
 }
