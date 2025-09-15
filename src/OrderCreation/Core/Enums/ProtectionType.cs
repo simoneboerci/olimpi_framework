@@ -1,19 +1,23 @@
 namespace OrderCreation.Core.Enums;
 
+/// <summary>
+/// Enum che rappresenta il tipo di protezione applicata a un ordine di trading.
+/// Può essere nessuna, relativa (basata sulla distanza) o assoluta (basata sul prezzo).
+/// </summary>
 public enum ProtectionType
 {
     /// <summary>
-    /// No protection.
+    /// Nessuna protezione.
     /// </summary>
     None,
 
     /// <summary>
-    /// Relative or distance based protection type.
+    /// Protezione relativa, basata sulla distanza dal prezzo corrente.
     /// </summary>
     Relative,
 
     /// <summary>
-    /// Absolute or price based protection type.
+    /// Protezione assoluta, basata su un prezzo specifico.
     /// </summary>
     Absolute
 }
