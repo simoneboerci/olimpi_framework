@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using OrderCreation;
+using OrderCreation.Core.Enums;
 using OrderExecution.Core.Interfaces;
 
 namespace OrderExecution.Core.Models;
