@@ -1,5 +1,5 @@
 using CAlgoInterface.Core.Routing;
-using OrderCreation;
+using OrderCreation.Core.Enums;
 
 namespace CAlgoInterface.Backend.Routing;
 
