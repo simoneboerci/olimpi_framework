@@ -1,4 +1,4 @@
-using OrderCreation;
+using OrderCreation.Core.Enums;
 
 namespace CAlgoInterface.Core.Routing;
 
