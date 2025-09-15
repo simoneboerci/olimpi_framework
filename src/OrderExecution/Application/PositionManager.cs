@@ -6,6 +6,14 @@ using OrderExecution.Core.Interfaces;
 namespace OrderExecution.Application;
 
 //TODO: IMPLEMENTARE LA CLASSE
+
+/// <summary>
+/// Implementazione dell'interfaccia <see cref="IPositionManager"/>.
+/// Fornisce tutti i metodi necessari per la gestione delle posizioni di trading, sia pendenti che attive.
+/// Permette di cancellare, modificare, invertire e chiudere posizioni, con vari overload per gestire parametri aggiuntivi.
+/// Supporta sia operazioni sincrone che asincrone tramite callback.
+/// Ogni metodo deve essere implementato per interagire con il sistema di trading sottostante.
+/// </summary>
 public class PositionManager : IPositionManager
 {
     public ITradeResult CancelPendingPosition(IPendingPosition pendingPosition)
