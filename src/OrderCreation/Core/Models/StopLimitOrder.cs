@@ -4,29 +4,54 @@ using OrderCreation.Core.Interfaces;
 
 namespace OrderCreation.Core.Models;
 
+/// <summary>
+/// Struttura che implementa <see cref="IStopLimitOrder"/> e rappresenta un ordine stop-limit di trading.
+/// Espone tutte le proprietà di un ordine stop-limit, inclusi identificatori, tipo di trade, volume, prezzi, scadenza, tipo di protezione, range stop-limit, prezzo base e metodi di trigger.
+/// Implementa l'uguaglianza e l'hash code per confronti e utilizzo in collezioni.
+/// </summary>
 internal readonly struct StopLimitOrder : IStopLimitOrder
 {
+    /// <inheritdoc/>
     public Guid Id { get; }
+    /// <inheritdoc/>
     public TradeType TradeType { get; }
+    /// <inheritdoc/>
     public string SymbolName { get; }
+    /// <inheritdoc/>
     public double Volume { get; }
+    /// <inheritdoc/>
     public string Label { get; }
+    /// <inheritdoc/>
     public double? StopLossPips { get; }
+    /// <inheritdoc/>
     public double? TakeProfitPips { get; }
+    /// <inheritdoc/>
     public string Comment { get; }
+    /// <inheritdoc/>
     public bool HasTrailingStop { get; }
+    /// <inheritdoc/>
     public StopTriggerMethod? StopLossTriggerMethod { get; }
 
+    /// <inheritdoc/>
     public double TargetPrice { get; }
+    /// <inheritdoc/>
     public DateTime? ExpirationTime { get; }
+    /// <inheritdoc/>
     public ProtectionType? ProtectionType { get; }
 
+    /// <inheritdoc/>
     public double StopOrderPips { get; }
+    /// <inheritdoc/>
     public double BasePrice { get; }
+    /// <inheritdoc/>
     public StopTriggerMethod? StopOrderTriggerMethod { get; }
 
+    /// <inheritdoc/>
     public double StopLimitRangePips { get; }
 
+    /// <summary>
+    /// Costruttore che inizializza tutte le proprietà dell'ordine stop-limit.
+    /// </summary>
     internal StopLimitOrder(
         Guid id,
         TradeType tradeType,
@@ -69,11 +94,19 @@ internal readonly struct StopLimitOrder : IStopLimitOrder
         StopLimitRangePips = stopLimitRangePips;
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object obj) => obj is IStopLimitOrder other && Equals(other);
+
+    /// <inheritdoc/>
     public bool Equals(IOrder other) => other is IStopLimitOrder stopLimitOrder && Equals(stopLimitOrder);
+
+    /// <inheritdoc/>
     public bool Equals(IPendingOrder other) => other is IStopLimitOrder stopLimitOrder && Equals(stopLimitOrder);
+
+    /// <inheritdoc/>
     public bool Equals(IStopOrder other) => other is IStopLimitOrder stopLimitOrder && Equals(stopLimitOrder);
 
+    /// <inheritdoc/>
     public bool Equals(IStopLimitOrder other)
     {
         return Id == other.Id && TradeType == other.TradeType && SymbolName == other.SymbolName &&
@@ -86,6 +119,9 @@ internal readonly struct StopLimitOrder : IStopLimitOrder
                ProtectionType == other.ProtectionType;
     }
 
+    /// <summary>
+    /// Restituisce una rappresentazione testuale dell'ordine stop-limit.
+    /// </summary>
     public override string ToString()
     {
         return $"StopLimitOrder(Id: {Id}, TradeType: {TradeType}, SymbolName: {SymbolName}, Volume: {Volume}, " +
@@ -96,6 +132,9 @@ internal readonly struct StopLimitOrder : IStopLimitOrder
                $"ProtectionType: {ProtectionType}";
     }
 
+    /// <summary>
+    /// Restituisce il codice hash dell'ordine stop-limit.
+    /// </summary>
     public override int GetHashCode()
     {
         var hash = new HashCode();
@@ -124,6 +163,13 @@ internal readonly struct StopLimitOrder : IStopLimitOrder
         return hash.ToHashCode();
     }
 
+    /// <summary>
+    /// Operatore di uguaglianza tra due ordini stop-limit.
+    /// </summary>
     public static bool operator == (StopLimitOrder left, StopLimitOrder right) => left.Equals(right);
+
+    /// <summary>
+    /// Operatore di disuguaglianza tra due ordini stop-limit.
+    /// </summary>
     public static bool operator != (StopLimitOrder left, StopLimitOrder right) => !left.Equals(right);
 }

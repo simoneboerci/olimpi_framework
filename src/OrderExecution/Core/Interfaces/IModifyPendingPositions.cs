@@ -4,6 +4,11 @@ using OrderCreation.Core.Enums;
 
 namespace OrderExecution.Core.Interfaces;
 
+/// <summary>
+/// Interfaccia che espone i metodi per modificare posizioni pendenti di trading.
+/// Permette la modifica di vari parametri come prezzo, stop loss, take profit, tipo di protezione, volume, trailing stop e metodi di trigger.
+/// Supporta sia operazioni sincrone che asincrone tramite callback, con vari overload per gestire scenari avanzati.
+/// </summary>
 public interface IModifyPendingPositions
 {
     ITradeResult ModifyPendingPosition(IPendingPosition pendingPosition, double targetPrice);
