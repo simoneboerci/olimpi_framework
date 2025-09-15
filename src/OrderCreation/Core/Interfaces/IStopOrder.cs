@@ -1,4 +1,5 @@
 using System;
+using OrderCreation.Core.Enums;
 
 namespace OrderCreation.Core.Interfaces;
 

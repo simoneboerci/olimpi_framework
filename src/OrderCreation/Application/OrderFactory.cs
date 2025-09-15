@@ -5,8 +5,16 @@ using OrderCreation.Core.Models;
 
 namespace OrderCreation.Application;
 
+/// <summary>
+/// Implementazione dell'interfaccia <see cref="IOrderFactory"/>.
+/// Fornisce metodi per la creazione di ordini di trading di diversi tipi (mercato, range, limite, stop, stop-limit).
+/// Ogni metodo inizializza e restituisce un'istanza dell'ordine corrispondente, impostando tutti i parametri necessari.
+/// </summary>
 public class OrderFactory : IOrderFactory
 {
+    /// <summary>
+    /// Crea un ordine di mercato.
+    /// </summary>
     public IMarketOrder CreateMarketOrder(
         Guid id,
         TradeType tradeType,
@@ -34,6 +42,9 @@ public class OrderFactory : IOrderFactory
         );
     }
 
+    /// <summary>
+    /// Crea un ordine di mercato con range.
+    /// </summary>
     public IMarketRangeOrder CreateMarketRangeOrder(
         Guid id,
         TradeType tradeType,
@@ -65,6 +76,9 @@ public class OrderFactory : IOrderFactory
         );
     }
 
+    /// <summary>
+    /// Crea un ordine limite.
+    /// </summary>
     public ILimitOrder CreateLimitOrder(
         Guid id,
         TradeType tradeType,
@@ -98,6 +112,9 @@ public class OrderFactory : IOrderFactory
         );
     }
 
+    /// <summary>
+    /// Crea un ordine stop.
+    /// </summary>
     public IStopOrder CreateStopOrder(
         Guid id,
         TradeType tradeType,
@@ -137,6 +154,9 @@ public class OrderFactory : IOrderFactory
         );
     }
 
+    /// <summary>
+    /// Crea un ordine stop-limit.
+    /// </summary>
     public IStopLimitOrder CreateStopLimitOrder(
         Guid id,
         TradeType tradeType,
