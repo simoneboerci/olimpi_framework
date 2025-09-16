@@ -1,7 +1,7 @@
 using System;
 using CAlgoInterface.Core.Interfaces;
 
-namespace OrderExecution.Core.Interfaces;
+namespace PositionManaging.Core.Interfaces;
 
 /// <summary>
 /// Interfaccia che espone i metodi per invertire posizioni di trading.

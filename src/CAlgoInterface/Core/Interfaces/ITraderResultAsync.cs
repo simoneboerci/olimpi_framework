@@ -1,6 +1,4 @@
-using CAlgoInterface.Core.Interfaces;
-
-namespace OrderExecution.Core.Interfaces;
+namespace CAlgoInterface.Core.Interfaces;
 
 /// <summary>
 /// Interfaccia che rappresenta il risultato asincrono di un'operazione di trading.
