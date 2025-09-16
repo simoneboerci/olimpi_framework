@@ -1,5 +1,6 @@
+using System;
+using CAlgoInterface.Core.Interfaces;
 using OrderCreation.Core.Interfaces;
-using OrderExecution.Core.Interfaces;
 
 namespace OrderExecution.Application;
 
@@ -21,7 +22,7 @@ public interface IOrderExecutor
     /// </summary>
     /// <param name="marketOrder">Ordine di mercato da eseguire.</param>
     /// <returns>Operazione di trading asincrona.</returns>
-    public ITradeOperation ExecuteMarketOrderAsync(IMarketOrder marketOrder);
+    public ITradeOperation ExecuteMarketOrderAsync(IMarketOrder marketOrder, Action<ITradeResult> callback);
 
     /// <summary>
     /// Esegue un ordine di mercato con range in modo sincrono.
@@ -35,7 +36,7 @@ public interface IOrderExecutor
     /// </summary>
     /// <param name="marketRangeOrder">Ordine di mercato con range da eseguire.</param>
     /// <returns>Operazione di trading asincrona.</returns>
-    public ITradeOperation ExecuteMarketRangeOrderAsync(IMarketRangeOrder marketRangeOrder);
+    public ITradeOperation ExecuteMarketRangeOrderAsync(IMarketRangeOrder marketRangeOrder, Action<ITradeResult> callback);
 
     /// <summary>
     /// Inserisce un ordine limite in modo sincrono.
@@ -49,7 +50,7 @@ public interface IOrderExecutor
     /// </summary>
     /// <param name="limitOrder">Ordine limite da inserire.</param>
     /// <returns>Operazione di trading asincrona.</returns>
-    public ITradeOperation PlaceLimitOrderAsync(ILimitOrder limitOrder);
+    public ITradeOperation PlaceLimitOrderAsync(ILimitOrder limitOrder, Action<ITradeResult> callback);
 
     /// <summary>
     /// Inserisce un ordine stop in modo sincrono.
@@ -63,7 +64,7 @@ public interface IOrderExecutor
     /// </summary>
     /// <param name="stopOrder">Ordine stop da inserire.</param>
     /// <returns>Operazione di trading asincrona.</returns>
-    public ITradeOperation PlaceStopOrderAsync(IStopOrder stopOrder);
+    public ITradeOperation PlaceStopOrderAsync(IStopOrder stopOrder, Action<ITradeResult> callback);
 
     /// <summary>
     /// Inserisce un ordine stop-limit in modo sincrono.
@@ -77,5 +78,5 @@ public interface IOrderExecutor
     /// </summary>
     /// <param name="stopLimitOrder">Ordine stop-limit da inserire.</param>
     /// <returns>Operazione di trading asincrona.</returns>
-    public ITradeOperation PlaceStopLimitOrderAsync(IStopLimitOrder stopLimitOrder);
+    public ITradeOperation PlaceStopLimitOrderAsync(IStopLimitOrder stopLimitOrder, Action<ITradeResult> callback);
 }
