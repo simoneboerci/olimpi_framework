@@ -1,7 +1,7 @@
 using System;
-using OrderCreation.Core.Enums;
+using CAlgoInterface.Core.Enums;
 
-namespace OrderCreation.Core.Interfaces;
+namespace CAlgoInterface.Core.Interfaces;
 
 public interface IStopOrder : IPendingOrder, IEquatable<IStopOrder>
 {

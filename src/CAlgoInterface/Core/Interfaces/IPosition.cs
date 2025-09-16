@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using OrderCreation.Core.Enums;
+using CAlgoInterface.Core.Enums;
 
 namespace CAlgoInterface.Core.Interfaces;
 

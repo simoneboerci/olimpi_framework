@@ -1,6 +1,6 @@
 using System;
-using OrderCreation.Core.Enums;
-using OrderCreation.Core.Interfaces;
+using CAlgoInterface.Core.Enums;
+using CAlgoInterface.Core.Interfaces;
 
 namespace OrderCreation.Core.Models;
 

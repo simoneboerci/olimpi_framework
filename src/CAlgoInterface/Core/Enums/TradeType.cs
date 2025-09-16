@@ -1,4 +1,4 @@
-namespace OrderCreation.Core.Enums;
+namespace CAlgoInterface.Core.Enums;
 
 /// <summary>
 /// Enum che rappresenta il tipo di operazione di trading.

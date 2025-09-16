@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using CAlgoInterface.Core.Enums;
-using OrderCreation.Core.Enums;
 
 /// <summary>
 /// Interfaccia che rappresenta un'operazione di trading.

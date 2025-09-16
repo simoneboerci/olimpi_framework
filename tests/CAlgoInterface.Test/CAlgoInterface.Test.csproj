@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/CAlgoInterface/CAlgoInterface.csproj" />
+    <ProjectReference Include="..\..\src\OrderCreation\OrderCreation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

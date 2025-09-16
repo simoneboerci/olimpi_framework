@@ -1,4 +1,4 @@
-namespace OrderCreation.Core.Enums;
+namespace CAlgoInterface.Core.Enums;
 
 /// <summary>
 /// Enum che rappresenta il metodo di trigger utilizzato per attivare ordini Stop e Stop Loss.

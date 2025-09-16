@@ -1,6 +1,6 @@
 using System;
 
-namespace OrderCreation.Core.Interfaces;
+namespace CAlgoInterface.Core.Interfaces;
 
 /// <summary>
 /// Interfaccia che rappresenta un ordine di mercato con range di trading.

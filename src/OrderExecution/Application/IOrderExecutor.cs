@@ -1,6 +1,5 @@
 using System;
 using CAlgoInterface.Core.Interfaces;
-using OrderCreation.Core.Interfaces;
 
 namespace OrderExecution.Application;
 
