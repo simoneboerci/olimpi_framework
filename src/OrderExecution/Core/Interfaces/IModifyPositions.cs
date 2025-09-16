@@ -1,5 +1,5 @@
 using System;
-using OrderCreation;
+using CAlgoInterface.Core.Interfaces;
 using OrderCreation.Core.Enums;
 
 namespace OrderExecution.Core.Interfaces;

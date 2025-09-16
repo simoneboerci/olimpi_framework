@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="../OrderCreation/OrderCreation.csproj" />
+    <ProjectReference Include="..\..\Olimpi Framework\Olimpi Framework.csproj" />
+    <ProjectReference Include="..\CAlgoInterface\CAlgoInterface.csproj" />
   </ItemGroup>
 
 </Project>
