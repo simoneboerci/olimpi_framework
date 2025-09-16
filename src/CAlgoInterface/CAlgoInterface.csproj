@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Olimpi Framework/Olimpi Framework.csproj" />
-    <ProjectReference Include="../OrderCreation/OrderCreation.csproj" />
   </ItemGroup>
 
 </Project>

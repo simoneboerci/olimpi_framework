@@ -1,9 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using cAlgo.API.Internals;
 using CAlgoInterface.Backend.Services;
-using Moq;
 
 namespace CAlgoInterface.Test
 {
@@ -13,11 +8,11 @@ namespace CAlgoInterface.Test
         // Creiamo una classe per tracciare i messaggi loggati
         private class LogTracker
         {
-            public List<object> LoggedMessages { get; } = new List<object>();
+            public List<object> LoggedMessages { get; } = [];
         }
 
-        private ICTraderConsole _cTraderConsole;
-        private LogTracker _logTracker;
+        private ICTraderConsole? _cTraderConsole;
+        private LogTracker? _logTracker;
 
         [TestInitialize]
         public void Setup()
@@ -64,10 +59,10 @@ namespace CAlgoInterface.Test
             var value = (object)"Test message"; // Cast esplicito a object per chiamare il metodo corretto
 
             // Act
-            _cTraderConsole.Log(value);
+            _cTraderConsole!.Log(value);
 
             // Assert
-            Assert.AreEqual(1, _logTracker.LoggedMessages.Count, "Il numero di messaggi loggati non è corretto.");
+            Assert.AreEqual(1, _logTracker!.LoggedMessages.Count, "Il numero di messaggi loggati non è corretto.");
             Assert.AreEqual(value, _logTracker.LoggedMessages[0], "Il messaggio loggato non corrisponde al valore atteso.");
         }
 
@@ -78,10 +73,10 @@ namespace CAlgoInterface.Test
             var parameters = new object[] { "Test1", 123, true };
 
             // Act
-            _cTraderConsole.Log(parameters);  // Remove the explicit cast to object
+            _cTraderConsole!.Log(parameters);  // Remove the explicit cast to object
 
             // Assert
-            Assert.AreEqual(1, _logTracker.LoggedMessages.Count);
+            Assert.AreEqual(1, _logTracker!.LoggedMessages.Count);
             CollectionAssert.AreEqual(parameters, (object[])_logTracker.LoggedMessages[0]);
         }
 
@@ -93,10 +88,10 @@ namespace CAlgoInterface.Test
             var parameters = new object[] { "Param1", 456 };
 
             // Act
-            _cTraderConsole.Log(message, parameters[0], parameters[1]);
+            _cTraderConsole!.Log(message, parameters[0], parameters[1]);
 
             // Assert
-            Assert.AreEqual(1, _logTracker.LoggedMessages.Count);
+            Assert.AreEqual(1, _logTracker!.LoggedMessages.Count);
             var loggedEntry = (dynamic)_logTracker.LoggedMessages[0];
             Assert.AreEqual(message, loggedEntry.Message);
             CollectionAssert.AreEqual(parameters, (object[])loggedEntry.Parameters);

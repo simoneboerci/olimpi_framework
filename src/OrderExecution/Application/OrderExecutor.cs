@@ -3,8 +3,6 @@ using CAlgoInterface.Application;
 using CAlgoInterface.Backend.Integrations;
 using CAlgoInterface.Core.Interfaces;
 using CAlgoInterface.Core.Routing;
-using OrderCreation.Core.Interfaces;
-using OrderExecution.Core.Interfaces;
 
 namespace OrderExecution.Application;
 

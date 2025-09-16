@@ -1,8 +1,8 @@
 using System;
+using CAlgoInterface.Core.Enums;
 using CAlgoInterface.Core.Interfaces;
-using OrderCreation.Core.Enums;
 
-namespace OrderExecution.Core.Interfaces;
+namespace PositionManaging.Core.Interfaces;
 
 /// <summary>
 /// Interfaccia che espone i metodi per modificare posizioni di trading attive.

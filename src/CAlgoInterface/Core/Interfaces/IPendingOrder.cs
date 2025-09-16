@@ -1,7 +1,7 @@
 using System;
-using OrderCreation.Core.Enums;
+using CAlgoInterface.Core.Enums;
 
-namespace OrderCreation.Core.Interfaces;
+namespace CAlgoInterface.Core.Interfaces;
 
 /// <summary>
 /// Interfaccia che rappresenta un ordine pendente di trading.

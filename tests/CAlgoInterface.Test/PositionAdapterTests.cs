@@ -1,9 +1,8 @@
 using Moq;
-using cAlgo.API;
 using CAlgoInterface.Backend.Integrations;
 using CAlgoInterface.Core.Routing;
 using CAlgoInterface.Backend.Services;
-using cAlgo.API.Internals;
+using CAlgoInterface.Core.Enums;
 
 namespace CAlgoInterface.Tests
 {
@@ -14,7 +13,7 @@ namespace CAlgoInterface.Tests
         public void Id_And_OrderId_ShouldReturnGuidFromIntId()
         {
             // Arrange
-            var fakePosition = new Mock<Position>();
+            var fakePosition = new Mock<cAlgo.API.Position>();
             fakePosition.Setup(p => p.Id).Returns(123);
 
             var tradeTypeMapper = new Mock<ITradeTypeMapper>();
@@ -35,10 +34,10 @@ namespace CAlgoInterface.Tests
         public void SymbolId_ShouldReturnGuidFromSymbolId()
         {
             // Arrange
-            var fakeSymbol = new Mock<Symbol>();
+            var fakeSymbol = new Mock<cAlgo.API.Internals.Symbol>();
             fakeSymbol.Setup(s => s.Id).Returns(987L);
 
-            var fakePosition = new Mock<Position>();
+            var fakePosition = new Mock<cAlgo.API.Position>();
             fakePosition.Setup(p => p.Symbol).Returns(fakeSymbol.Object);
 
             var tradeTypeMapper = new Mock<ITradeTypeMapper>();
@@ -57,13 +56,13 @@ namespace CAlgoInterface.Tests
         public void TradeType_ShouldUseMapper()
         {
             // Arrange
-            var fakePosition = new Mock<Position>();
+            var fakePosition = new Mock<cAlgo.API.Position>();
             fakePosition.Setup(p => p.TradeType).Returns(cAlgo.API.TradeType.Sell);
 
             var tradeTypeMapper = new Mock<ITradeTypeMapper>();
             tradeTypeMapper
                 .Setup(m => m.ToTradeType(cAlgo.API.TradeType.Sell))
-                .Returns(OrderCreation.Core.Enums.TradeType.Sell);
+                .Returns(TradeType.Sell);
 
             var stopTriggerMethodMapper = new Mock<IStopTriggerMethodMapper>();
 
@@ -73,7 +72,7 @@ namespace CAlgoInterface.Tests
             var result = adapter.TradeType;
 
             // Assert
-            Assert.AreEqual(OrderCreation.Core.Enums.TradeType.Sell, result);
+            Assert.AreEqual(TradeType.Sell, result);
             tradeTypeMapper.Verify(m => m.ToTradeType(cAlgo.API.TradeType.Sell), Times.Once);
         }
 
@@ -81,14 +80,14 @@ namespace CAlgoInterface.Tests
         public void StopTriggerMethod_ShouldUseMapper()
         {
             // Arrange
-            var fakePosition = new Mock<Position>();
+            var fakePosition = new Mock<cAlgo.API.Position>();
             fakePosition.Setup(p => p.StopLossTriggerMethod).Returns(cAlgo.API.StopTriggerMethod.DoubleOpposite);
 
             var tradeTypeMapper = new Mock<ITradeTypeMapper>();
             var stopTriggerMethodMapper = new Mock<IStopTriggerMethodMapper>();
             stopTriggerMethodMapper
                 .Setup(m => m.ToCustomStopTriggerMethod(cAlgo.API.StopTriggerMethod.DoubleOpposite))
-                .Returns(OrderCreation.Core.Enums.StopTriggerMethod.DoubleOpposite);
+                .Returns(StopTriggerMethod.DoubleOpposite);
 
             var adapter = new PositionAdapter(fakePosition.Object, tradeTypeMapper.Object, stopTriggerMethodMapper.Object);
 
@@ -96,7 +95,7 @@ namespace CAlgoInterface.Tests
             var result = adapter.StopTriggerMethod;
 
             // Assert
-            Assert.AreEqual(OrderCreation.Core.Enums.StopTriggerMethod.DoubleOpposite, result);
+            Assert.AreEqual(StopTriggerMethod.DoubleOpposite, result);
             stopTriggerMethodMapper.Verify(m => m.ToCustomStopTriggerMethod(cAlgo.API.StopTriggerMethod.DoubleOpposite), Times.Once);
         }
 
@@ -107,7 +106,7 @@ namespace CAlgoInterface.Tests
             var now = DateTime.UtcNow;
             var lastUpdate = now.AddMinutes(5);
 
-            var fakePosition = new Mock<Position>();
+            var fakePosition = new Mock<cAlgo.API.Position>();
             fakePosition.Setup(p => p.VolumeInUnits).Returns(1000);
             fakePosition.Setup(p => p.Quantity).Returns(0.1);
             fakePosition.Setup(p => p.EntryPrice).Returns(1.2345);

@@ -1,9 +1,8 @@
 using System;
+using CAlgoInterface.Core.Enums;
 using CAlgoInterface.Core.Interfaces;
-using OrderCreation.Core.Enums;
-using OrderExecution.Core.Interfaces;
 
-namespace OrderExecution.Application;
+namespace PositionManaging.Application;
 
 //TODO: IMPLEMENTARE LA CLASSE
 

@@ -1,6 +1,6 @@
-using OrderExecution.Core.Interfaces;
+using PositionManaging.Core.Interfaces;
 
-namespace OrderExecution.Application;
+namespace PositionManaging.Application;
 
 /// <summary>
 /// Interfaccia che aggrega le funzionalità di gestione delle posizioni di trading.

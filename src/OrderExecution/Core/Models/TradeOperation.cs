@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using CAlgoInterface.Core.Enums;
 using CAlgoInterface.Core.Interfaces;
-using OrderCreation.Core.Enums;
 
 namespace OrderExecution.Core.Models;
 

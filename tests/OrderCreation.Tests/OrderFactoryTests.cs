@@ -1,5 +1,5 @@
-﻿using OrderCreation.Application;
-using OrderCreation.Core.Enums;
+﻿using CAlgoInterface.Core.Enums;
+using OrderCreation.Application;
 
 namespace OrderCreation.Tests
 {
