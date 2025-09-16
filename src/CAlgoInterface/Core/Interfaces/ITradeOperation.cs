@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
+using CAlgoInterface.Core.Enums;
 using OrderCreation.Core.Enums;
-using OrderExecution.Core.Enums;
 
 /// <summary>
 /// Interfaccia che rappresenta un'operazione di trading.
 /// Espone proprietà per identificatori, impatto sulla posizione, stato, tipo di trade, prezzo di esecuzione, volume, etichette, commenti, canale, tempi e relazioni con altre operazioni.
 /// Può essere implementata per rappresentare sia operazioni di apertura che di chiusura.
 /// </summary>
-namespace OrderExecution.Core.Interfaces
+namespace CAlgoInterface.Core.Interfaces
 {
     public interface ITradeOperation
     {

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using cAlgo.API;
 using CAlgoInterface.Backend.Services;
-using OrderExecution.Core.Enums;
-using OrderExecution.Core.Interfaces;
+using CAlgoInterface.Core.Enums;
+using CAlgoInterface.Core.Interfaces;
 
 namespace CAlgoInterface.Backend.Integrations;
 
