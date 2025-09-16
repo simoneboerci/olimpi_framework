@@ -1,4 +1,4 @@
-namespace OrderExecution.Core.Enums;
+namespace CAlgoInterface.Core.Enums;
 
 /// <summary>
 /// Enum che rappresenta l'impatto di un'operazione di trading sulla posizione.
