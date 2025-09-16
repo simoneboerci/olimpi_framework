@@ -1,4 +1,4 @@
-namespace OrderExecution.Core.Enums;
+namespace CAlgoInterface.Core.Enums;
 
 /// <summary>
 /// Enum che rappresenta lo stato di un'operazione di trading.

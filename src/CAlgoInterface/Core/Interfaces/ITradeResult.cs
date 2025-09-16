@@ -1,4 +1,4 @@
-namespace OrderExecution.Core.Interfaces;
+namespace CAlgoInterface.Core.Interfaces;
 
 /// <summary>
 /// Interfaccia che rappresenta il risultato di un'operazione di trading.
