@@ -1,4 +1,4 @@
-using OrderExecution.Core.Interfaces;
+using CAlgoInterface.Core.Interfaces;
 
 namespace CAlgoInterface.Backend.Integrations;
 
